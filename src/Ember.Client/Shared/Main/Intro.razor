@@ -1,0 +1,80 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IJSRuntime JSRuntime
+@inject IModalService Modal
+@inject ILoginService  loginService
+@inject NavigationManager navigationManager
+
+<div class="intro">
+    <div class="filter"></div>
+    <div class="banner" style=" background-image: url('@ImgSource')">
+        <div class="banner-content">
+            @ChildContent
+            <AuthorizeView>
+                <Authorized>
+                    <div class="banner-buttom">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary d-flex align-items-center waves-effect"
+                                    @onclick="@(() => navigationManager.NavigateTo("/account"))">
+                                <i class="material-icons icon">
+                                    supervisor_account
+                                </i>
+                                Личный кабинет
+                            </button>
+                            <button type="button" class="btn btn-primary dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Профиль</a>
+                                <a class="dropdown-item" href="#">Настройки</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="javascript: void(0)" @onclick="() => loginService.Logout()">Выйти</a>
+                            </div>
+                        </div>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <div class="banner-buttom">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary d-flex align-items-center waves-effect"
+                                    @onclick="@(() => Modal.Show<Modal.Login>("Выполните вход"))">
+                                <i class="material-icons icon">
+                                    supervisor_account
+                                </i>
+                                Личный кабинет
+                            </button>
+                        </div>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
+            <div class="scroll-indicator" @onclick="() => JSRuntime.ScrollToElementId(BodyId)">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string BodyId { get; set; }
+
+    [Parameter]
+    public string ImgSource { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        if(state.User.Identity.IsAuthenticated)
+            userName = state.User.Identity.Name;
+    }
+}

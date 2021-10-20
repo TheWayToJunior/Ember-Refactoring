@@ -1,0 +1,41 @@
+﻿@inherits LayoutComponentBase
+
+@inject IModalService Modal
+@inject NavigationManager Navigation
+
+<div class="app">
+    <BlazoredModal />
+    <Loader IsLoading="isLoading" />
+
+    <div class="main">
+        @Body
+    </div>
+
+    <footor>
+        <div class="text-center">
+            <hr class="socket" />
+            <div class="container">
+                &copy; CПП Уголек @DateTime.Now.Year г.
+            </div>
+        </div>
+    </footor>
+</div>
+
+@code
+{
+    bool isLoading = true;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isLoading = false;
+
+            StateHasChanged();
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+}
+
+

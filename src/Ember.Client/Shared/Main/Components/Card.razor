@@ -1,0 +1,46 @@
+﻿
+
+<div class="col-sm-4">
+    <div class="card news-card">
+        <div class="news-card-img">
+            <img class="img-responsive" src="@ImageSrc" />
+        </div>
+        <div class="news-content">
+            <span class="news-lable">News</span>
+            <div class="news-meta">
+                <span class="time">
+                    <a href="#">
+                        <i class="material-icons">
+                            query_builder
+                        </i>
+                        @Date.ToShortDateString()
+                    </a>
+                    <a href="@Source">Подробнее</a>
+                </span>
+            </div>
+            <h2 class="news-header">@Title</h2>
+            <p>
+                @ChildContent
+            </p>
+        </div>
+    </div>
+</div>
+
+@code {
+    public int Id { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string ImageSrc { get; set; }
+
+    [Parameter]
+    public string Source { get; set; }
+
+    [Parameter]
+    public DateTime Date { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

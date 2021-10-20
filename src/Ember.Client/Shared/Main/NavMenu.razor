@@ -1,0 +1,50 @@
+﻿
+<div class="logo">
+    <a href="/" class="logo-text">
+        <img src="@Image" class="@CssClassImage" />
+    </a>
+</div>
+
+<nav @onclick="ToggleNavMenu">
+    <ul class="nav-ul">
+        <li>
+            <NavLink href="" Match="NavLinkMatch.All">
+                <span>Главная</span>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink href="news">
+                <span>Новости</span>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink href="about">
+                <span>Предприятие</span>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink href="job">
+                <span>Вакансии</span>
+            </NavLink>
+        </li>
+    </ul>
+</nav>
+
+
+
+@code {
+    [Parameter]
+    public string Image { get; set; }
+
+    [Parameter]
+    public string CssClassImage { get; set; }
+
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

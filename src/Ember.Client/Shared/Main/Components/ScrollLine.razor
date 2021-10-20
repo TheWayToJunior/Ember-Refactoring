@@ -1,0 +1,82 @@
+﻿@implements IDisposable
+@inject IJSRuntime JsRuntime
+
+<div class="scroll-Line__block container" id="line">
+    <div class="line">
+        <div class="line-scroll" style="max-height:@maxHeight; height: @height"></div>
+    </div>
+    <div class="@ContentClassCss">
+        @ChildContent
+        <div class="dot">
+            <div class="dot-scroll"></div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string ContentClassCss { get; set; }
+
+    private DotNetObjectReference<Line> objRef;
+    private Line scrollLine;
+
+    private string maxHeight;
+    private string height;
+
+    protected override void OnInitialized()
+    {
+        scrollLine = new Line();
+
+        scrollLine.Changed += () => ChangedComponent();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(scrollLine);
+
+            await JsRuntime.InvokeVoidAsync("scrollLineOn", objRef, "line");
+        }
+    }
+
+    private void ChangedComponent()
+    {
+        maxHeight = scrollLine.MaxHeight.ToString().Replace(',', '.') + "px";
+
+        height = scrollLine.Height.ToString().Replace(',', '.') + "px";
+
+        StateHasChanged();
+    }
+
+    public async void Dispose()
+    {
+        await JsRuntime.InvokeVoidAsync("scrollLineOff");
+        objRef?.Dispose();
+    }
+
+    public class Line
+    {
+        public event Action Changed;
+
+        public decimal Height { get; private set; }
+        public decimal MaxHeight { get; private set; }
+
+        [JSInvokable]
+        public void SetHeight(JsonElement height)
+        {
+            Height = height.GetDecimal();
+            Changed?.Invoke();
+        }
+
+        [JSInvokable]
+        public void SetMaxHeight(JsonElement maxHeight)
+        {
+            MaxHeight = maxHeight.GetDecimal();
+            Changed?.Invoke();
+        }
+    }
+}

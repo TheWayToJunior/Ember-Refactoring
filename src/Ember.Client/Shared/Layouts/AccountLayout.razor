@@ -1,0 +1,81 @@
+﻿@inherits LayoutComponentBase
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ILoginService LoginService
+
+<div class="grey lighten-3">
+    <header>
+        <nav role="navigation" class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                        aria-controls="navbarCollapse" aria-expanded="false">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav navbar-collapse">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link waves-effect"><span style="margin-right: 25px;">@userName</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="btn btn-primary waves-effect" @onclick="() => LoginService.Logout()">Выйти</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-fixed position-fixed">
+            <a href="/" class="logo-wrapper waves-effect">
+                <img src="http://rst-dnr.ru/wp-content/uploads/2018/02/LOGO-kopiya.jpg" />
+            </a>
+
+            <div class="list-group list-group-flush">
+                <NavLink class="list-group-item waves-effect" href="account" Match="NavLinkMatch.All">
+                    <span class="material-icons">
+                        assessment
+                    </span>
+                    Мониторинг
+                </NavLink>
+                <NavLink class="list-group-item waves-effect" href="#">
+                    <span class="material-icons">
+                        supervisor_account
+                    </span>
+                    Профиль
+                </NavLink>
+                <NavLink class="list-group-item waves-effect" href="#">
+                    <span class="material-icons">
+                        settings
+                    </span>
+                    Настройки
+                </NavLink>
+                <AuthorizeView Roles="@Roles.Admin">
+                    <NavLink class="list-group-item waves-effect" href="account/admin">
+                        <span class="material-icons">
+                            vpn_key
+                        </span>
+                        Админ панель
+                    </NavLink>
+                </AuthorizeView>
+            </div>
+        </div>
+    </header>
+    <BlazoredModal />
+    <div class="account-main jumbotron" style="min-height: 100vh;">
+        <div class="px-5 max-lg-5">
+            <div class="container-fluid mt-3">
+                @Body
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userName = state.User.Identity.Name;
+    }
+}

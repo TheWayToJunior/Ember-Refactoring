@@ -1,0 +1,49 @@
+﻿@inject IJSRuntime JsRuntime
+
+<div class="col-12 contact-block">
+    @Background
+    <div class="contact-block_container">
+        <div class="contact-block_button">
+            <a class="btn" href="javascript:void(0);">
+                <i class="material-icons">
+                    close
+                </i>
+                <span>Закрыть</span>
+            </a>
+        </div>
+        <div class="contact-block_img">
+            <img src="@Image" />
+        </div>
+        <div class="contact-block_info">
+            <ul>
+                <li>
+                    <span class="contact-block_title">
+                        КОНТАКТЫ:
+                    </span>
+                </li>
+                @foreach (var item in ContactInfo)
+                {
+                    <li>
+                        <i class="material-icons">
+                            @item.icon
+                        </i>
+                        <span>
+                            @item.text
+                        </span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<(string icon, string text)> ContactInfo { get; set; }
+
+    [Parameter]
+    public string Image { get; set; }
+
+    [Parameter]
+    public RenderFragment Background { get; set; }
+}
