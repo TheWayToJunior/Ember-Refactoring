@@ -13,11 +13,11 @@ namespace Ember.Infrastructure.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public AccountService(UserManager<User> userManager, ApplicationDbContext context, IMapper mapper)
+        public AccountService(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;
@@ -64,7 +64,7 @@ namespace Ember.Infrastructure.Services
                     .AppendError("This Email is already linked to the account number").BuildResult();
             }
 
-            User user = await _userManager.FindByEmailAsync(email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(email);
             var result = await GetAccountByNumberAsync(numberAccount);
 
             if (!result.IsSuccess)

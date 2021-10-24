@@ -17,7 +17,7 @@ namespace Ember.Infrastructure.Data.EntityTypeConfigurations
                 .HasMaxLength(6).ValueGeneratedNever();
             builder.HasIndex(account => account.Number).IsUnique();
 
-            builder.Property(account => account.Payment);
+            builder.Property(account => account.Payment).HasColumnType("Money");
             builder.Property(account => account.Address);
 
             builder.HasMany(account => account.Payments)

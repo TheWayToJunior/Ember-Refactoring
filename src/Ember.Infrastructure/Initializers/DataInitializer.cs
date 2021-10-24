@@ -1,62 +1,78 @@
 ﻿using Ember.Domain;
+using Ember.Infrastructure.Data.Entitys;
 using Ember.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Ember.Infrastructure.Helpers
 {
     public class DataInitializer
     {
-        public static async Task InitializeRoles(IServiceProvider serviceProvider)
-        {
-            //initializing custom roles 
-            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var UserManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        private static UserManager<ApplicationUser> _userManager;
+        private static RoleManager<IdentityRole> _roleManager;
+        private static ILogger<DataInitializer> _logger;
 
+        private static async Task CreateRoleAsync(string roleName)
+        {
+            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+
+            if(!result.Succeeded)
+            {
+                _logger.LogError($"Error: {string.Join("\n", result.Errors.Select(e => e.Description))}");
+            }
+
+            _logger.LogInformation($"Created role: {roleName}");
+        }
+
+        private static async Task CreateAdminAsync()
+        {
+            var poweruser = new ApplicationUser(email: "admin@email.com", userName: "admin@email.com");
+            string adminPassword = "Miha1932";
+
+            var result = await _userManager.CreateAsync(poweruser, adminPassword);
+
+            if (!result.Succeeded)
+            {
+                _logger.LogError($"Error: {string.Join("\n", result.Errors.Select(e => e.Description))}");
+            }
+
+            await _userManager.AddToRoleAsync(poweruser, "Admin");
+            _logger.LogInformation($"Admin created: {poweruser.UserName}");
+        }
+
+        public static async Task IdentityInitializeAsync(IServiceProvider serviceProvider)
+        {
+            _userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            _logger = serviceProvider.GetRequiredService<ILogger<DataInitializer>>();
+
+
+            /// Create roles
             string[] roleNames = { Roles.Admin, Roles.Editor, Roles.User };
-            IdentityResult roleResult;
+            _logger.LogInformation("Checking role registration");
 
             foreach (var roleName in roleNames)
             {
-                var roleExist = await RoleManager.RoleExistsAsync(roleName)
-                    .ConfigureAwait(true);
+                var roleExist = await _roleManager.RoleExistsAsync(roleName);
 
-                // ensure that the role does not exist
                 if (!roleExist)
                 {
-                    //create the roles and seed them to the database: 
-                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName))
-                        .ConfigureAwait(true);
+                    await CreateRoleAsync(roleName);
                 }
             }
 
-            // find the user with the admin email 
-            var user = await UserManager.FindByEmailAsync("admin@email.com")
-                        .ConfigureAwait(true);
+            /// Create user
+            var user = await _userManager.FindByEmailAsync("admin@email.com");
+            _logger.LogInformation("Checking administrator account registration");
 
-            // check if the user exists
             if (user == null)
             {
-                //Here you could create the super admin who will maintain the web app
-                var poweruser = new IdentityUser
-                {
-                    UserName = "admin@email.com",
-                    Email = "admin@email.com",
-                };
-                string adminPassword = "Miha1932";
-
-                var createPowerUser = await UserManager.CreateAsync(poweruser, adminPassword)
-                        .ConfigureAwait(true);
-
-                if (createPowerUser.Succeeded)
-                {
-                    //here we tie the new user to the role
-                    await UserManager.AddToRoleAsync(poweruser, "Admin")
-                        .ConfigureAwait(true);
-                }
+                await CreateAdminAsync();
             }
         }
 

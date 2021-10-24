@@ -1,19 +1,39 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+﻿using Ember.Infrastructure.Helpers;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebApplication1.Server
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using var scope = host.Services.CreateScope();
+            var provider = scope.ServiceProvider;
+
+            var logger = provider.GetRequiredService<ILogger<Program>>();
+
+            try
+            {
+                await DataInitializer.IdentityInitializeAsync(provider);
+
+                logger.LogInformation("Finished Seeding Default Data");
+                logger.LogInformation("Application Starting");
+
+                await host.RunAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while migrating or seeding the database.");
+
+                throw;
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

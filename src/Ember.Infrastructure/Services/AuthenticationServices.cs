@@ -11,13 +11,13 @@ namespace Ember.Infrastructure.Services
 {
     public class AuthenticationServices : IAuthenticationServices
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         private readonly IConfiguration _configuration;
         private readonly ITokenFactory _tokenFactory;
 
-        public AuthenticationServices(UserManager<User> userManager, SignInManager<User> signInManager,
+        public AuthenticationServices(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration, ITokenFactory tokenFactory)
         {
             _userManager = userManager;
@@ -35,7 +35,7 @@ namespace Ember.Infrastructure.Services
         {
             var resultBuilder = OperationResult<UserTokenResponse>.CreateBuilder();
 
-            var user = new User(reques.Email, userName: reques.Email);
+            var user = new ApplicationUser(reques.Email, userName: reques.Email);
             var result = await _userManager.CreateAsync(user, reques.Password);
 
             await _userManager.AddToRoleAsync(user, Roles.User);

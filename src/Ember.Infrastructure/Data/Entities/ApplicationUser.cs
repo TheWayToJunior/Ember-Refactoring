@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Ember.Infrastructure.Data.Entitys
 {
-    public class User : IdentityUser, IUser
+    public class ApplicationUser : IdentityUser, IUser
     {
-        public User(string email, string userName)
+        public ApplicationUser(string email, string userName)
         {
             Email = email;
             UserName = userName;

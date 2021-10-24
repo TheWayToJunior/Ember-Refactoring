@@ -36,11 +36,12 @@ namespace Ember.Application.Features.News.Queries.GetPage
                 ? postasDescending.Where(news => news.Category.Equals(request.Category))
                 : postasDescending;
 
-            var page = posts.GetPage(request.Page, request.PageSize).ToList();
+            var query = posts.GetPage(request.Page, request.PageSize);
+            var entities = await Task.Run(() => query.ToList());
 
             var response = new GetPageNewsResponse()
             {
-                Values = _mapper.Map<IEnumerable<NewsDto>>(page),
+                Values = _mapper.Map<IEnumerable<NewsDto>>(entities),
                 Page = request.Page,
                 PageSize = request.PageSize
             };

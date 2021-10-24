@@ -8,7 +8,7 @@ namespace Ember.Infrastructure.Data.Entitys
         {
         }
 
-        public UserAccount(User user, Account account)
+        public UserAccount(ApplicationUser user, Account account)
         {
             User = user;
             UserId = user.Id;
@@ -21,7 +21,7 @@ namespace Ember.Infrastructure.Data.Entitys
 
         public int AccountId { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         public virtual Account Account { get; set; }
     }
