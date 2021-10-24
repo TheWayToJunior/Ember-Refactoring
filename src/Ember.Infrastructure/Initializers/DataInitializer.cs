@@ -1,0 +1,154 @@
+﻿using Ember.Domain;
+using Ember.Shared;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
+
+namespace Ember.Infrastructure.Helpers
+{
+    public class DataInitializer
+    {
+        public static async Task InitializeRoles(IServiceProvider serviceProvider)
+        {
+            //initializing custom roles 
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+            string[] roleNames = { Roles.Admin, Roles.Editor, Roles.User };
+            IdentityResult roleResult;
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await RoleManager.RoleExistsAsync(roleName)
+                    .ConfigureAwait(true);
+
+                // ensure that the role does not exist
+                if (!roleExist)
+                {
+                    //create the roles and seed them to the database: 
+                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName))
+                        .ConfigureAwait(true);
+                }
+            }
+
+            // find the user with the admin email 
+            var user = await UserManager.FindByEmailAsync("admin@email.com")
+                        .ConfigureAwait(true);
+
+            // check if the user exists
+            if (user == null)
+            {
+                //Here you could create the super admin who will maintain the web app
+                var poweruser = new IdentityUser
+                {
+                    UserName = "admin@email.com",
+                    Email = "admin@email.com",
+                };
+                string adminPassword = "Miha1932";
+
+                var createPowerUser = await UserManager.CreateAsync(poweruser, adminPassword)
+                        .ConfigureAwait(true);
+
+                if (createPowerUser.Succeeded)
+                {
+                    //here we tie the new user to the role
+                    await UserManager.AddToRoleAsync(poweruser, "Admin")
+                        .ConfigureAwait(true);
+                }
+            }
+        }
+
+        public static void Initialize(ModelBuilder builder)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            builder.Entity<News>().HasData(
+                new News[]
+                    {
+                        new News
+                        {
+                            Id = 1,
+                            Time = DateTime.Now,
+                            ImageSrc="https://sun9-9.userapi.com/c850128/v850128254/1d36a9/B54sYaowd5E.jpg",
+                            Title= "Об итогах ремонтного периода.",
+                            Description = "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были" +
+                                          " разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний",
+                            Category = CategoryMode.Repair
+                        },
+
+                        new News
+                        {
+                            Id = 2,
+                            Time = DateTime.Now,
+                            ImageSrc="https://sun9-28.userapi.com/c204516/v204516299/3b411/0qjhwQo15mw.jpg",
+                            Title= "Внимание произвадятся работы!!!",
+                            Description = "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были" +
+                                          " разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний",
+                            Category =  CategoryMode.Repair
+                        },
+
+                        new News
+                        {
+                            Id = 3,
+                            Time = DateTime.Now,
+                            ImageSrc="https://sun9-35.userapi.com/c851028/v851028124/196804/0j89FAqJ5Wg.jpg",
+                            Title= "Инвестиционная программа 2019 года",
+                            Description = "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были" +
+                                          " разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний",
+                             Category =  CategoryMode.Ecology
+                        }
+                    });
+
+            var accounts = new Account[]
+            {
+                    new Account
+                    {
+                        Id = 1,
+                        Number = "193216",
+                        Payment = 125,
+                        Address = "ул. Великан д. 21 кв. 28"
+                    },
+                    new Account
+                    {
+                        Id = 2,
+                        Number = "321619",
+                        Payment = 75,
+                        Address = "ул. Жарова д. 5а кв. 47"
+                    },
+                    new Account
+                    {
+                        Id = 3,
+                        Number = "161932",
+                        Payment = 547,
+                        Address = "ул. Нежская д. 19"
+                    }
+            };
+
+            builder.Entity<Account>().HasData(accounts);
+
+            builder.Entity<Payment>().HasData(
+                new Payment[]
+                {
+                    new Payment
+                    {
+                        Id = 1,
+                        AccountId = 1,
+                        Amount = 1250,
+                        Date = DateTime.Now
+                    },
+                    new Payment
+                    {
+                        Id = 2,
+                        AccountId = 1,
+                        Amount = 750,
+                        Date = DateTime.Now.AddDays(20)
+                    },
+                });
+        }
+    }
+}

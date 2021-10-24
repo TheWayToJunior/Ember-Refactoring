@@ -1,0 +1,197 @@
+﻿@page "/news"
+
+@layout MainLayout
+
+@using System.Text.Json
+
+@inject IJSRuntime JsRuntime
+@inject IModalService Modal
+@inject HttpClient HttpClient
+
+<Intro BodyId="@("body")" ImgSource="https://sun9-42.userapi.com/c857420/v857420760/1adb31/vogYSXlKEYw.jpg">
+    <div class="banner-text">
+        <h2>Новости</h2>
+        <p>
+            предприятие, созданное с целью бесперебойного снабжения потребителей качественным теплом,
+            для обеспечения комфортных условий труда и проживания граждан.
+        </p>
+    </div>
+</Intro>
+
+<header id="header">
+    <NavMenu Image="/img/Logo.png" CssClassImage="logo-img" />
+</header>
+
+<div class="body" id="body">
+    <section>
+        <div class="container-fluid">
+            <div class="container">
+
+                <div class="news-category">
+                    <Category CurrentCategory="currentCategory" Links="Links" SelectedLink="SelectedLink" />
+                </div>
+
+                @if (news == null)
+                {
+                    <div class="conteiner" style="margin:25px;">
+                        <div class="spinner-border text-info text-center" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex justify-content-end">
+                        <AuthorizeView Roles="@($"{Roles.Admin}, {Roles.Editor}")">
+                            <a class="btn btn-success waves-effect" href="javascript:void(0)"
+                               @onclick="@(async ()=> { await CreatePost(); })">
+                                <span class="material-icons text-white">
+                                    playlist_add
+                                </span>
+                            </a>
+                        </AuthorizeView>
+                    </div>
+
+                    @foreach (var item in news)
+                    {
+                        <div class="blog-post">
+                            <div class="blog-post__img">
+                                <img src="@item.ImageSrc" />
+                            </div>
+                            <div class="blog-post__info">
+                                <div class="blog-post__date">
+                                    @*<span>@item.Time.Date.DayOfWeek</span>*@
+                                    <span>@item.Time.ToLongDateString()</span>
+                                </div>
+                                <h1 class="blog-post__title">@item.Title</h1>
+                                <p class="blog-post__text">@item.Description</p>
+                                <div class="btn-group">
+                                    <a class="btn btn-primary d-flex align-items-center waves-effect" href="@item.Source">
+                                        <span class="material-icons icon">
+                                            arrow_back_ios
+                                        </span>
+                                        Подробнее
+                                    </a>
+                                </div>
+
+                                <AuthorizeView Roles="@($"{Roles.Admin}, {Roles.Editor}")">
+                                    <a class="btn btn-warning waves-effect" href="javascript:void(0)"
+                                       @onclick="async ()=> { await EditPost(item); }">
+                                        <span class="material-icons text-white">
+                                            edit
+                                        </span>
+                                    </a>
+
+                                    <a class="btn btn-danger waves-effect" href="javascript:void(0)"
+                                       @onclick="async ()=> { await DeletePost(item.Id); }">
+                                        <span class="material-icons text-white">
+                                            delete_forever
+                                        </span>
+                                    </a>
+                                </AuthorizeView>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <div style="margin-top: 55px;">
+            <Pagination CurrentPage="currentPage" PageQuantity="pageQuantity" Range="2" SelectedPage="SelectedPage" />
+        </div>
+    </section>
+</div>
+
+@code
+{
+    private IEnumerable<NewsDto> news = null;
+
+    private Dictionary<string, object> Links =
+        new Dictionary<string, object>
+        {
+            { "Все", CategoryMode.All },
+            { "События", CategoryMode.Events },
+            { "Ремонт", CategoryMode.Repair },
+            { "Экология", CategoryMode.Ecology }
+        };
+
+    int currentPage = 1;
+    CategoryMode currentCategory = CategoryMode.All;
+
+    int pageQuantity;
+    int quantityPerPage = 5;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetNews();
+    }
+
+    private async Task SelectedLink(object category)
+    {
+        currentPage = 1;
+        currentCategory = (CategoryMode)category;
+
+        await GetNews();
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        currentPage = page;
+
+        await GetNews();
+        await JsRuntime.ScrollToElementId("body");
+    }
+
+    private async Task GetNews()
+    {
+        var httpResponse = await HttpClient
+            .GetAsync($"api/News?page={currentPage}&quantityPerPage={quantityPerPage}&category={currentCategory}");
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            pageQuantity = Convert.ToInt32(httpResponse.Headers.GetValues("pageQuantity").FirstOrDefault());
+
+            var responsString = await httpResponse.Content.ReadAsStringAsync();
+
+            news = JsonSerializer.Deserialize<List<NewsDto>>(responsString,
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        }
+        else
+        {
+            Console.WriteLine(httpResponse.StatusCode);
+        }
+    }
+
+    private async Task CreatePost()
+    {
+        var modal = Modal.Show<CreateNews>($"Добавление новости {DateTime.Now.ToShortDateString()}");
+
+        var result = await modal.Result;
+
+        if (result.Cancelled)
+        {
+            await GetNews();
+        }
+    }
+
+    private async Task EditPost(NewsDto post)
+    {
+        ModalParameters parameters = new ModalParameters();
+        parameters.Add(nameof(EditNews.NewsPost), post);
+
+        var modal = Modal.Show<EditNews>($"Изменить новости {post.Time.ToShortDateString()}", parameters);
+
+        var result = await modal.Result;
+
+        if (result.Cancelled)
+        {
+            await GetNews();
+        }
+    }
+
+    private async Task DeletePost(int id)
+    {
+        await HttpClient.DeleteAsync($"api/News/{id}");
+        await GetNews();
+    }
+}

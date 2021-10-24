@@ -1,0 +1,248 @@
+﻿@page "/account"
+
+@using System.Text.Json
+@using System.Net
+
+@layout AccountLayout
+
+@attribute [Authorize]
+
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+@inject IJSRuntime JsRuntime
+@inject IModalService Modal
+
+@if (account != null)
+{
+    <main class="dash-content">
+        <div class="container-fluid">
+            <div class="row dash-row">
+                <div class="col-xl-4">
+                    <div class="stats stats-primary waves-effect" @onclick="@(() => ShowBindAccount())">
+                        <h3 class="stats-title"> Лицеовой счет </h3>
+                        <div class="stats-content">
+                            <div class="stats-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="stats-data">
+                                <div class="stats-number">@(account.Number ?? "Не указан")</div>
+                                <div class="stats-change">
+                                    <span class="stats-timeframe"> @account.Address </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="stats stats-success waves-effect">
+                        <h3 class="stats-title"> Оплата </h3>
+                        <div class="stats-content">
+                            <div class="stats-icon">
+                                <i class="fas fa-cart-arrow-down"></i>
+                            </div>
+                            <div class="stats-data">
+                                <div class="stats-number">@(account.Payment) руб.</div>
+                                <div class="stats-change">
+                                    <span class="stats-percentage">531,10</span>
+                                    <span class="stats-timeframe"> руб/Гкал</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="stats stats-danger">
+                        <h3 class="stats-title"> Горячая линия </h3>
+                        <div class="stats-content">
+                            <div class="stats-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="stats-data">
+                                <div class="stats-number">59-87-76</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="card easion-card">
+                        <div class="card-header">
+                            <div class="easion-card-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="easion-card-title"> Статистика </div>
+                            <div class="easion-card-menu">
+                                <div class="dropdown show">
+                                    <a class="easion-card-menu-link" href="#" role="button" data-toggle="dropdown"
+                                       aria-haspopup="true" aria-expanded="false">
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item" href="#">Action</a>
+                                        <a class="dropdown-item" href="#">Another action</a>
+                                        <a class="dropdown-item" href="#">Something else here</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body easion-card-body-chart" id="graph-container">
+                            <canvas id="easionChartjsBar"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="card easion-card">
+                        <div class="card-header">
+                            <div class="easion-card-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="easion-card-title"> История оплат </div>
+                        </div>
+                        <div class="card-body ">
+                            <div class="notifications">
+                                @if (account.PaymentHistories != null)
+                                {
+
+                                    @foreach (var item in account.PaymentHistories.OrderBy(h => h.Date))
+                                    {
+                                        <a href="#!" class="notification">
+                                            <div class="notification-icon">
+                                                <i class="fas fa-inbox"></i>
+                                            </div>
+                                            <div class="notification-text">@item.Amount руб.</div>
+                                            <span class="notification-time">@((DateTime.Now - item.Date).Days) days ago</span>
+                                        </a>
+                                    }
+
+                                    <div class="notifications-show-all">
+                                        <a href="#!">Подробнее</a>
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    <a href="#!" class="notification">Нет данных</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+}
+else
+{
+    <div class="d-flex align-items-center justify-content-center" style="height: 80vh;">
+        <div class="spinner-border text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+}
+
+@code {
+    private string email;
+    private AccountDto account;
+    private HttpStatusCode statusCode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+
+        email = state.User.Identity.Name;
+        await GetAccount();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (account != null && !firstRender)
+        {
+            await InitChartBar();
+        }
+    }
+
+    private async Task GetAccount()
+    {
+        var httpResponse = await httpClient.GetAsync($"api/bindaccount?email={email}");
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            var responsString = await httpResponse.Content.ReadAsStringAsync();
+
+            try
+            {
+                account = JsonSerializer.Deserialize<AccountDto>(responsString,
+                    new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+            }
+            catch (JsonException)
+            {
+                account = new AccountDto();
+            }
+        }
+        else
+        {
+            Console.WriteLine(httpResponse.StatusCode);
+        }
+
+        statusCode = httpResponse.StatusCode;
+    }
+
+    private async Task ShowBindAccount()
+    {
+        switch (statusCode)
+        {
+            case HttpStatusCode.NoContent:
+                await Show<BindAccount>("Привязать аккаунт");
+                break;
+            case HttpStatusCode.OK:
+                await Show<UnlinkAccount>("Отвязать аккаунт");
+                break;
+            default:
+                Console.WriteLine(statusCode);
+                break;
+        }
+    }
+
+    private async Task Show<T>(string title)
+        where T : ComponentBase
+    {
+        ModalParameters parameters = new ModalParameters();
+        parameters.Add(nameof(BindAccount.Email), email);
+
+        var modal = Modal.Show<T>(title, parameters);
+
+        var result = await modal.Result;
+
+        if (result.Cancelled)
+        {
+            await GetAccount();
+        }
+    }
+
+    private async Task InitChartBar()
+    {
+        object weekday = new object();
+        var deys = account.PaymentHistories?.Select(h => h.Date);
+
+        if (deys != null)
+        {
+            weekday = new
+            {
+                Monday    = GetQuantityDays(deys, DayOfWeek.Monday),
+                Tuesday   = GetQuantityDays(deys, DayOfWeek.Tuesday),
+                Wednesday = GetQuantityDays(deys, DayOfWeek.Wednesday),
+                Thursday  = GetQuantityDays(deys, DayOfWeek.Thursday),
+                Friday    = GetQuantityDays(deys, DayOfWeek.Friday),
+            };
+        }
+
+        await JsRuntime.InitChartBar(weekday);
+    }
+
+    private int GetQuantityDays(IEnumerable<DateTime> deys, DayOfWeek day)
+    {
+        return deys.Where(d => d.DayOfWeek == day).Count();
+    }
+}

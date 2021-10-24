@@ -1,0 +1,90 @@
+﻿@inject HttpClient http
+
+@if (ShowErrors)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@Error</p>
+    </div>
+}
+
+<EditForm Model="NewsPost" OnValidSubmit="(async () => await CreatePost())" @attributes="EditFormAttributes">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label for="inputTitle">Заголовок статьи</label>
+        <input type="text" class="form-control" id="inputTitle" placeholder="Введите название статьи"
+               @bind="NewsPost.Title">
+        <ValidationMessage For="@(() => NewsPost.Title)" />
+    </div>
+
+    <div class="form-group">
+        <label for="inputImageSrc">Картинка статьи</label>
+        <input type="text" class="form-control" id="inputImageSrc" placeholder="Вставте ссылку на картинку"
+               @bind="NewsPost.ImageSrc">
+        <ValidationMessage For="@(() => NewsPost.ImageSrc)" />
+    </div>
+
+    <div class="form-group">
+        <label for="inputSource">Ссылка на статью</label>
+        <input type="text" class="form-control" id="inputSource" placeholder="Вставте ссылку на статью"
+               @bind="NewsPost.Source">
+        <ValidationMessage For="@(() => NewsPost.Source)" />
+    </div>
+
+    <div class="form-group">
+        <label for="inputCategory">Катигория статьи</label>
+        <select class="form-control" id="inputCategory" @bind="NewsPost.Category">
+            @foreach (var item in Enum.GetValues(typeof(CategoryMode)))
+            {
+                <option>@((CategoryMode)item)</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="inputDescription">Краткое описание статьи</label>
+        <textarea class="form-control" id="inputDescription" rows="3" style="resize:none;"
+                  @bind="NewsPost.Description"></textarea>
+        <ValidationMessage For="@(() => NewsPost.Description)" />
+    </div>
+    <button type="submit" class="btn btn-warning">Изменить</button>
+</EditForm>
+
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter]
+    public NewsDto NewsPost { get; set; }
+
+    string Error = "";
+    bool ShowErrors = false;
+
+    Dictionary<string, object> EditFormAttributes =
+        new Dictionary<string, object>
+        {
+            { "style", "min-width:500px;" }
+        };
+
+    private async Task CreatePost()
+    {
+        var httpContent = new StringContent(JsonSerializer.Serialize(NewsPost), Encoding.UTF8, "application/json");
+
+        var httpResponse = await http.PutAsync($"api/news/{NewsPost.Id}", httpContent);
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            BlazoredModal.Close(ModalResult.Cancel());
+        }
+        else
+        {
+            var responsString = await httpResponse.Content.ReadAsStringAsync();
+
+            Error = responsString;
+
+            ShowErrors = true;
+        }
+    }
+}
+

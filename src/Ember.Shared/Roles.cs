@@ -1,11 +1,11 @@
 ﻿namespace Ember.Shared
 {
-    public class Roles
+    public static class Roles
     {
-        public static string Admin => nameof(Admin);
+        public const string Admin = nameof(Admin);
 
-        public static string Editor => nameof(Editor);
+        public const string Editor = nameof(Editor);
 
-        public static string User => nameof(User);
+        public const string User = nameof(User);
     }
 }
