@@ -7,7 +7,7 @@
     </div>
 }
 
-@if (UserRoles.AllRoles != null && UserRoles.AllUserRoles != null)
+@if (UserRoles.Roles != null && UserRoles.UserRoles != null)
 {
     <div class="d-flex flex-column justify-content-center">
         <div class="d-block" style="margin: 15px;">
@@ -35,7 +35,7 @@
     BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter]
-    public UserRoles UserRoles { get; set; }
+    public UserRolesDto UserRoles { get; set; }
 
     string Error = "";
     bool ShowErrors = false;
@@ -46,9 +46,9 @@
     {
         modifiers = new List<RoleModifier>();
 
-        foreach (var role in UserRoles.AllRoles)
+        foreach (var role in UserRoles.Roles)
         {
-            modifiers.Add(new RoleModifier(role, UserRoles.AllUserRoles.Any(r => r == role)));
+            modifiers.Add(new RoleModifier(role, UserRoles.UserRoles.Any(r => r == role)));
         }
     }
 

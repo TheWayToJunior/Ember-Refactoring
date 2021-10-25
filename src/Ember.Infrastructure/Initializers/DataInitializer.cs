@@ -14,12 +14,12 @@ namespace Ember.Infrastructure.Helpers
     public class DataInitializer
     {
         private static UserManager<ApplicationUser> _userManager;
-        private static RoleManager<IdentityRole> _roleManager;
+        private static RoleManager<ApplicationRole> _roleManager;
         private static ILogger<DataInitializer> _logger;
 
         private static async Task CreateRoleAsync(string roleName)
         {
-            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+            var result = await _roleManager.CreateAsync(new ApplicationRole(roleName));
 
             if(!result.Succeeded)
             {
@@ -48,7 +48,7 @@ namespace Ember.Infrastructure.Helpers
         public static async Task IdentityInitializeAsync(IServiceProvider serviceProvider)
         {
             _userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            _roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
             _logger = serviceProvider.GetRequiredService<ILogger<DataInitializer>>();
 
 

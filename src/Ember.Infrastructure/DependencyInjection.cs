@@ -31,7 +31,7 @@ namespace Ember.Infrastructure
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-            collection.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            collection.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequireNonAlphanumeric = false;

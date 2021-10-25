@@ -55,7 +55,7 @@ namespace Ember.Infrastructure.Services
                         .ConfigureAwait(true);
                 }
 
-                logger.LogInformation("Сообщение отправлено!");
+                logger.LogInformation("The message is sent!");
             }
             catch (Exception e)
             {

@@ -2,7 +2,12 @@
 {
     public class PaginationRequest
     {
-        public PaginationRequest(int page = 1, int pageSize = 5)
+        public PaginationRequest() 
+            : this(page: 1, pageSize: 5)
+        {
+        }
+
+        public PaginationRequest(int page, int pageSize)
         {
             Page = page;
             PageSize = pageSize;

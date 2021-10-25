@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ember.Infrastructure.Migrations
 {
-    public partial class RenamingEntitiesAndChangingTheirConfiguration : Migration
+    public partial class InitDataBase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,7 +26,6 @@ namespace Ember.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -54,7 +53,7 @@ namespace Ember.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Number = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
-                    Payment = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Payment = table.Column<decimal>(type: "Money", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -246,20 +245,20 @@ namespace Ember.Infrastructure.Migrations
                 columns: new[] { "Id", "Category", "Description", "ImageSrc", "Source", "Time", "Title" },
                 values: new object[,]
                 {
-                    { 1, 2, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-9.userapi.com/c850128/v850128254/1d36a9/B54sYaowd5E.jpg", null, new DateTime(2021, 10, 23, 15, 56, 3, 118, DateTimeKind.Local).AddTicks(996), "Об итогах ремонтного периода." },
-                    { 2, 2, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-28.userapi.com/c204516/v204516299/3b411/0qjhwQo15mw.jpg", null, new DateTime(2021, 10, 23, 15, 56, 3, 119, DateTimeKind.Local).AddTicks(3044), "Внимание произвадятся работы!!!" },
-                    { 3, 3, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-35.userapi.com/c851028/v851028124/196804/0j89FAqJ5Wg.jpg", null, new DateTime(2021, 10, 23, 15, 56, 3, 119, DateTimeKind.Local).AddTicks(3071), "Инвестиционная программа 2019 года" }
+                    { 1, 2, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-9.userapi.com/c850128/v850128254/1d36a9/B54sYaowd5E.jpg", null, new DateTime(2021, 10, 25, 16, 52, 6, 584, DateTimeKind.Local).AddTicks(5888), "Об итогах ремонтного периода." },
+                    { 2, 2, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-28.userapi.com/c204516/v204516299/3b411/0qjhwQo15mw.jpg", null, new DateTime(2021, 10, 25, 16, 52, 6, 586, DateTimeKind.Local).AddTicks(1948), "Внимание произвадятся работы!!!" },
+                    { 3, 3, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-35.userapi.com/c851028/v851028124/196804/0j89FAqJ5Wg.jpg", null, new DateTime(2021, 10, 25, 16, 52, 6, 586, DateTimeKind.Local).AddTicks(1977), "Инвестиционная программа 2019 года" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Payment",
                 columns: new[] { "Id", "AccountId", "Amount", "Date" },
-                values: new object[] { 1, 1, 1250m, new DateTime(2021, 10, 23, 15, 56, 3, 120, DateTimeKind.Local).AddTicks(7038) });
+                values: new object[] { 1, 1, 1250m, new DateTime(2021, 10, 25, 16, 52, 6, 587, DateTimeKind.Local).AddTicks(7466) });
 
             migrationBuilder.InsertData(
                 table: "Payment",
                 columns: new[] { "Id", "AccountId", "Amount", "Date" },
-                values: new object[] { 2, 1, 750m, new DateTime(2021, 11, 12, 15, 56, 3, 120, DateTimeKind.Local).AddTicks(7399) });
+                values: new object[] { 2, 1, 750m, new DateTime(2021, 11, 14, 16, 52, 6, 587, DateTimeKind.Local).AddTicks(7866) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
