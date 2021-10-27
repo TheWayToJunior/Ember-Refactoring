@@ -1,5 +1,6 @@
 ﻿using Ember.Application.Interfaces;
 using Ember.Application.Interfaces.Data;
+using Ember.Application.Interfaces.Services;
 using Ember.Infrastructure.Data;
 using Ember.Infrastructure.Data.Entitys;
 using Ember.Infrastructure.Data.Repositories;
@@ -21,6 +22,7 @@ namespace Ember.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection collection, IConfiguration configuration)
         {
             collection.AddScoped<IEmailService, EmailService>();
+            collection.AddScoped<IUserRolesService, UserRolesService>();
             collection.AddScoped<IAccountService, AccountService>();
             collection.AddScoped<ITokenFactory, JwtFactory>();
             collection.AddScoped<IAuthenticationServices, AuthenticationServices>();

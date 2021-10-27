@@ -118,7 +118,8 @@
         await GetUserRoles();
 
         var statistic = await GetRoleStatistics();
-        await JsRuntime.InitPieChart(statistic.Users, statistic.Editors, statistic.Admins);
+        //await JsRuntime.InitPieChart(statistic.Users, statistic.Editors, statistic.Admins);
+        await JsRuntime.InitPieChart(1, 1, 1);
 
         StateHasChanged();
     }

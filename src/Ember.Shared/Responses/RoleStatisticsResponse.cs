@@ -2,10 +2,8 @@
 {
     public class RoleStatisticsResponse
     {
-        public int Users { get; set; }
+        public string RoleName { get; set; }
 
-        public int Editors { get; set; }
-
-        public int Admins { get; set; }
+        public int UsersCount { get; set; }
     }
 }
