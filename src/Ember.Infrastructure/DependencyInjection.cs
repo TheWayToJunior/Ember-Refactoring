@@ -21,9 +21,13 @@ namespace Ember.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection collection, IConfiguration configuration)
         {
-            collection.AddScoped<IEmailService, EmailService>();
-            collection.AddScoped<IUserRolesService, UserRolesService>();
+            collection.AddTransient<IEmailService, EmailService>();
+            collection.AddTransient<IPaymentService, PaymentService>();
+            collection.AddTransient<IUserRolesService, UserRolesService>();
+
             collection.AddScoped<IAccountService, AccountService>();
+            collection.AddScoped<IAccountPayHistoryService>(c => c.GetService<IAccountService>() as AccountService);
+
             collection.AddScoped<ITokenFactory, JwtFactory>();
             collection.AddScoped<IAuthenticationServices, AuthenticationServices>();
             collection.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));

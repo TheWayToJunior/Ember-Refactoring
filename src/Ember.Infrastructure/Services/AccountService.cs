@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ember.Application.Interfaces;
+using Ember.Application.Interfaces.Services;
 using Ember.Domain;
 using Ember.Domain.Contracts;
 using Ember.Infrastructure.Data;
@@ -7,11 +8,12 @@ using Ember.Infrastructure.Data.Entitys;
 using Ember.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 
 namespace Ember.Infrastructure.Services
 {
-    public class AccountService : IAccountService
+    public class AccountService : IAccountService, IAccountPayHistoryService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
@@ -76,7 +78,15 @@ namespace Ember.Infrastructure.Services
 
             _context.UsersAccounts.Add(new UserAccount(user, account));
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                resultBuilder.AppendError($"Message: {ex.Message}; InnerException: {ex.InnerException.Message}");
+            }
+
             return resultBuilder.BuildResult();
         }
 
@@ -89,14 +99,22 @@ namespace Ember.Infrastructure.Services
             if (!bindingCheack.IsSuccess)
             {
                 return resultBuilder.AppendErrors(bindingCheack.Errors)
-                    .AppendError("This Email is already linked to the account number").BuildResult();
+                    .BuildResult();
             }
 
             var binding = await _context.UsersAccounts.Include(ua => ua.User)
                 .FirstAsync(ua => ua.User.Email.Equals(email));
 
             _context.UsersAccounts.Remove(binding);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                resultBuilder.AppendError($"Message: {ex.Message}; InnerException: {ex.InnerException.Message}");
+            }
 
             return resultBuilder.BuildResult();
         }
@@ -105,7 +123,9 @@ namespace Ember.Infrastructure.Services
         {
             var resultBuilder = OperationResult<Account>.CreateBuilder();
 
-            Account account = await _context.Accounts.FirstOrDefaultAsync(a => a.Number.Equals(numberAccount));
+            Account account = await _context.Accounts
+                .Include(a => a.Payments)
+                .FirstOrDefaultAsync(a => a.Number.Equals(numberAccount));
 
             if (account is null)
             {
@@ -119,13 +139,13 @@ namespace Ember.Infrastructure.Services
 
         private async Task<IResult> CheckBindingAsync(string email)
         {
-            var builderResult = OperationResult.CreateBuilder();
+            var resultBuilder = OperationResult.CreateBuilder();
 
             IUser user = await _userManager.FindByEmailAsync(email);
 
             if (user is null)
             {
-                return builderResult.AppendError($"User not found: {email}")
+                return resultBuilder.AppendError($"User not found: {email}")
                     .BuildResult();
             }
 
@@ -134,11 +154,43 @@ namespace Ember.Infrastructure.Services
 
             if (!isAny)
             {
-                return builderResult.AppendError($"The user: {email} is not linked to the account")
+                return resultBuilder.AppendError($"The user: {email} is not linked to the account")
                     .BuildResult();
             }
 
-            return builderResult.BuildResult();
+            return resultBuilder.BuildResult();
+        }
+
+        public async Task<IResult> AddPayHistoryAsync(IReceipt receipt)
+        {
+            var resultBuilder = OperationResult.CreateBuilder();
+            var result = await GetAccountByNumberAsync(receipt.NumberAccount);
+
+            if (!result.IsSuccess)
+            {
+                return resultBuilder.AppendErrors(result.Errors)
+                    .BuildResult();
+            }
+
+            Account account = result.Value;
+            account.Payments.Add(new Payment
+            {
+                Amount = receipt.Amount,
+                AccountId = account.Id,
+                Account = account,
+                Date = DateTime.Now
+            });
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                resultBuilder.AppendError($"Message: {ex.Message}; InnerException: {ex.InnerException?.Message}");
+            }
+
+            return resultBuilder.BuildResult();
         }
     }
 }

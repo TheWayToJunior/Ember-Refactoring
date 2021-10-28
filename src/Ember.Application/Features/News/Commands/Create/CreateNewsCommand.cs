@@ -1,5 +1,5 @@
 ﻿using Ember.Domain;
-using Ember.Shared;
+using Ember.Domain.Contracts;
 using MediatR;
 using System;
 

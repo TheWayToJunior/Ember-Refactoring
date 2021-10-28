@@ -1,4 +1,5 @@
 ﻿using Ember.Application.Interfaces;
+using Ember.Domain.Contracts;
 using Ember.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Ember.Application.Dto;
+﻿using Ember.Domain.Contracts;
 using Ember.Shared;
+using System.Threading.Tasks;
 
 namespace Ember.Application.Interfaces
 {

@@ -4,6 +4,7 @@ using Ember.Application.Features.News.Commands.Update;
 using Ember.Application.Features.News.Queries;
 using Ember.Application.Features.News.Queries.GetPage;
 using Ember.Domain;
+using Ember.Domain.Contracts;
 using Ember.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

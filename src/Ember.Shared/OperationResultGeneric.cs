@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Ember.Domain.Contracts;
+using System.Collections.Generic;
 
 namespace Ember.Shared
 {

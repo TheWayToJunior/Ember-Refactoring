@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Ember.Shared
+namespace Ember.Domain.Contracts
 {
     public interface IResult
     {
@@ -9,7 +9,7 @@ namespace Ember.Shared
         public bool IsSuccess { get; }
     }
 
-    public interface IResult<T> : IResult
+    public interface IResult<out T> : IResult
     {
         T Value { get; }
     }

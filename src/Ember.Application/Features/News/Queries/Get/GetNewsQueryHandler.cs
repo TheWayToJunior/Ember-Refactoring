@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ember.Application.Dto;
 using Ember.Application.Interfaces.Data;
+using Ember.Domain.Contracts;
 using Ember.Shared;
 using MediatR;
 using System.Threading;

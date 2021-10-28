@@ -1,4 +1,5 @@
-﻿using Ember.Shared;
+﻿using Ember.Domain.Contracts;
+using Ember.Shared;
 using Ember.Shared.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;

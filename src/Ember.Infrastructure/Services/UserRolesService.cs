@@ -1,5 +1,6 @@
 ﻿using Ember.Application.Extensions;
 using Ember.Application.Interfaces.Services;
+using Ember.Domain.Contracts;
 using Ember.Infrastructure.Data;
 using Ember.Infrastructure.Data.Entities;
 using Ember.Infrastructure.Data.Entitys;

@@ -102,10 +102,10 @@
                         </div>
                         <div class="card-body ">
                             <div class="notifications">
-                                @if (account.PaymentHistories != null)
+                                @if (account.Payments != null)
                                 {
 
-                                    @foreach (var item in account.PaymentHistories.OrderBy(h => h.Date))
+                                    @foreach (var item in account.Payments.OrderBy(h => h.Date))
                                     {
                                         <a href="#!" class="notification">
                                             <div class="notification-icon">
@@ -224,7 +224,7 @@ else
     private async Task InitChartBar()
     {
         object weekday = new object();
-        var deys = account.PaymentHistories?.Select(h => h.Date);
+        var deys = account.Payments?.Select(h => h.Date);
 
         if (deys != null)
         {

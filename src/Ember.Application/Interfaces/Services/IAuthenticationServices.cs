@@ -1,4 +1,5 @@
-﻿using Ember.Shared;
+﻿using Ember.Domain.Contracts;
+using Ember.Shared;
 using System.Threading.Tasks;
 
 namespace Ember.Application.Interfaces

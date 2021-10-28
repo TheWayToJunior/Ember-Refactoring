@@ -1,4 +1,5 @@
 ﻿using Ember.Application.Interfaces.Data;
+using Ember.Domain.Contracts;
 using Ember.Shared;
 using MediatR;
 using System;
@@ -24,7 +25,7 @@ namespace Ember.Application.Features.News.Commands.Delete
 
             var entity = await repository.GetByIdAsync(request.Id);
 
-            if(entity is null)
+            if (entity is null)
             {
                 return resultBuilder
                     .AppendError($"Couldn't find the news by the specified id: {request.Id}")

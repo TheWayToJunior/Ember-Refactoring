@@ -11,6 +11,7 @@ namespace Ember.Infrastructure.Data.Repositories
     public class UnitOfWork<TKey> : IUnitOfWork<TKey>, IDisposable
     {
         private readonly ApplicationDbContext _context;
+
         private Hashtable _repositories;
 
         private bool _disposed;
@@ -58,6 +59,11 @@ namespace Ember.Infrastructure.Data.Repositories
             return Task.CompletedTask;
         }
 
+        public virtual IDatabaseTransaction BeginTransaction()
+        {
+            return new EntityDatabaseTransaction(_context);
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -66,7 +72,7 @@ namespace Ember.Infrastructure.Data.Repositories
 
         protected virtual void Dispose(bool disposing)
         {
-            if(_disposed) return;
+            if (_disposed) return;
 
             if (disposing)
             {

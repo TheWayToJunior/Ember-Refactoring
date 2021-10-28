@@ -2,6 +2,7 @@
 using Ember.Application.Extensions;
 using Ember.Application.Interfaces.Data;
 using Ember.Domain;
+using Ember.Domain.Contracts;
 using Ember.Shared;
 using Ember.Shared.Models;
 using MediatR;

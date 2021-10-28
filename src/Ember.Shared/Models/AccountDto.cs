@@ -12,6 +12,6 @@ namespace Ember.Shared
 
         public string Address { get; set; }
 
-        public virtual IEnumerable<PaymentDto> PaymentHistories { get; set; }
+        public virtual IEnumerable<PaymentDto> Payments { get; set; }
     }
 }

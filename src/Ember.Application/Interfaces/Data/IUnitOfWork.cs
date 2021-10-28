@@ -14,5 +14,7 @@ namespace Ember.Application.Interfaces.Data
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 
         Task Rollback();
+
+        IDatabaseTransaction BeginTransaction();
     }
 }

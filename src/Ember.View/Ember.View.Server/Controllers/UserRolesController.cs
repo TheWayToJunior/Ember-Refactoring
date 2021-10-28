@@ -1,4 +1,5 @@
 ﻿using Ember.Application.Interfaces.Services;
+using Ember.Domain.Contracts;
 using Ember.Infrastructure.Data.Entitys;
 using Ember.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
