@@ -37,18 +37,20 @@ namespace Ember.Infrastructure.Services
         {
             var resultBuilder = OperationResult<PaginationResponse<UserRolesDto>>.CreateBuilder();
 
-            var users = await _context.UserRoles
+            var filtered = _context.UserRoles
                 .Include(userRole => userRole.Role)
                 .Include(userRole => userRole.User)
                 .Where(CreatePredicate(roleName))
-                .Select(userRole => userRole.User)
+                .Select(userRole => userRole.User);
+
+            var page = await filtered
                 .GetPage(request.Page, request.PageSize)
-                .AsNoTracking()
                 .ToListAsync();
 
-            var dtos = await users.SelectAsync(async user => await MapAsync(user));
+            var dtos = await page.SelectAsync(async user => await MapAsync(user));
 
-            return resultBuilder.SetValue(new PaginationResponse<UserRolesDto>(dtos, request.Page, request.PageSize))
+            return resultBuilder.SetValue(new PaginationResponse<UserRolesDto>(dtos, request.Page, request.PageSize,
+                await filtered.CountAsync()))
                 .BuildResult();
         }
 

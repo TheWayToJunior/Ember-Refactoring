@@ -10,11 +10,12 @@ namespace Ember.Shared.Responses
             Values = new List<TValue>();
         }
 
-        public PaginationResponse(IEnumerable<TValue> values, int page, int pageSize)
+        public PaginationResponse(IEnumerable<TValue> values, int page, int pageSize, int totalSize)
         {
             Values = values;
             Page = page;
             PageSize = pageSize;
+            TotalSize = totalSize;
         }
 
         public IEnumerable<TValue> Values { get; set; }
@@ -23,6 +24,8 @@ namespace Ember.Shared.Responses
 
         public int PageSize { get; set; }
 
-        public int TotalPages => Convert.ToInt32(Math.Ceiling((double)Page / PageSize));
+        public int TotalSize { get; init; }
+
+        public int TotalPages => Convert.ToInt32(Math.Ceiling((double)TotalSize / PageSize));
     }
 }

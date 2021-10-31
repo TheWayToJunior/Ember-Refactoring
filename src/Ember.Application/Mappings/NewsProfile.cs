@@ -14,7 +14,8 @@ namespace Ember.Application.Mappings
             CreateMap<News, NewsDto>();
             CreateMap<News, GetNewsResponse>();
 
-            CreateMap<CreateNewsCommand, News>();
+            CreateMap<CreateNewsCommand, News>()
+                .ForMember(n => n.Id, opt => opt.Ignore());
             CreateMap<UpdateNewsCommand, News>()
                 .ForMember(n => n.Id, opt => opt.Ignore());
         }

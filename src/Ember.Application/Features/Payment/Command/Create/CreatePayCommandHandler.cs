@@ -1,12 +1,12 @@
-﻿using Ember.Application.Interfaces;
-using Ember.Application.Interfaces.Data;
-using Ember.Application.Interfaces.Services;
-using Ember.Domain.Contracts;
-using Ember.Shared;
+﻿using System;
 using MediatR;
-using System;
+using Ember.Shared;
 using System.Threading;
 using System.Threading.Tasks;
+using Ember.Domain.Contracts;
+using Ember.Application.Interfaces;
+using Ember.Application.Interfaces.Data;
+using Ember.Application.Interfaces.Services;
 
 namespace Ember.Application.Features.Payment.Command.Pay
 {
@@ -44,7 +44,9 @@ namespace Ember.Application.Features.Payment.Command.Pay
             catch (Exception ex)
             {
                 transaction.Rollback();
-                resultBuilder.AppendError($"Message: {ex.Message}");
+
+                resultBuilder.AppendError($"Message: {ex.Message}").
+                    AppendError($"InnerException: {ex.InnerException.Message}");
             }
 
             return resultBuilder.BuildResult();
@@ -56,7 +58,8 @@ namespace Ember.Application.Features.Payment.Command.Pay
 
             if (!result.IsSuccess)
             {
-                throw new InvalidOperationException("Payment receipt could not be saved");
+                throw new InvalidOperationException(
+                    "Payment receipt could not be saved", new Exception(string.Join("; ", result.Errors)));
             }
         }
 
@@ -66,7 +69,8 @@ namespace Ember.Application.Features.Payment.Command.Pay
 
             if (!result.IsSuccess)
             {
-                throw new InvalidOperationException("The payment operation failed");
+                throw new InvalidOperationException(
+                    "The payment operation failed", new Exception(string.Join("; ", result.Errors)));
             }
         }
     }

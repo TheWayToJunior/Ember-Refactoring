@@ -4,7 +4,7 @@ using Ember.Shared;
 
 namespace Ember.Application.Mappings
 {
-    class PaymentProfile : Profile
+    public class PaymentProfile : Profile
     {
         public PaymentProfile()
         {
