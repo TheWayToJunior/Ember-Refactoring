@@ -49,7 +49,7 @@ namespace Ember.Client.Auth
             return BuildAuthenticationState(token);
         }
 
-        public async Task Login(UserTokenResponse userToken)
+        public async Task Login(UserToken userToken)
         {
             await jsRuntime.SetInLocalStorage(tokenKey, userToken.Token);
             await jsRuntime.SetInLocalStorage(tokenLive, userToken.Expiration.ToString());

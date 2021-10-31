@@ -8,7 +8,7 @@ namespace Ember.Client.Auth
 {
     public interface ILoginService
     {
-        Task Login(UserTokenResponse userToken);
+        Task Login(UserToken userToken);
 
         Task Logout();
     }

@@ -51,7 +51,7 @@
         {
             var responseString = await httpResponse.Content.ReadAsStringAsync();
 
-            var userToken = JsonSerializer.Deserialize<UserTokenResponse>(responseString,
+            var userToken = JsonSerializer.Deserialize<UserToken>(responseString,
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
             await loginService.Login(userToken);

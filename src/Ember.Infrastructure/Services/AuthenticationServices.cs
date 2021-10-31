@@ -32,9 +32,9 @@ namespace Ember.Infrastructure.Services
 
         public DateTime TokenExpiration { get; }
 
-        public async Task<IResult<UserTokenResponse>> RegistrationAsync(AuthenticationReques reques)
+        public async Task<IResult<UserToken>> RegistrationAsync(AuthenticationReques reques)
         {
-            var resultBuilder = OperationResult<UserTokenResponse>.CreateBuilder();
+            var resultBuilder = OperationResult<UserToken>.CreateBuilder();
 
             var user = new ApplicationUser(reques.Email, userName: reques.Email);
             var result = await _userManager.CreateAsync(user, reques.Password);
@@ -53,9 +53,9 @@ namespace Ember.Infrastructure.Services
                 .BuildResult();
         }
 
-        public async Task<IResult<UserTokenResponse>> LoginAsync(AuthenticationReques reques)
+        public async Task<IResult<UserToken>> LoginAsync(AuthenticationReques reques)
         {
-            var resultBuilder = OperationResult<UserTokenResponse>.CreateBuilder();
+            var resultBuilder = OperationResult<UserToken>.CreateBuilder();
 
             var signInResult = await _signInManager.PasswordSignInAsync(reques.Email, reques.Password,
                 isPersistent: false, lockoutOnFailure: false);
@@ -72,7 +72,7 @@ namespace Ember.Infrastructure.Services
                 .BuildResult();
         }
 
-        private async Task<UserTokenResponse> CreateUserTokenAsync(string email)
+        private async Task<UserToken> CreateUserTokenAsync(string email)
         {
             var userRoles = await GetUserRolesAaync(email);
             return _tokenFactory

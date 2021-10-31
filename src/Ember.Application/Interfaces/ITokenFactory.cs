@@ -6,6 +6,6 @@ namespace Ember.Infrastructure.Services
 {
     public interface ITokenFactory
     {
-        UserTokenResponse CreateToken(IEnumerable<string> userRoles, string userName, string securityKey, DateTime expiration);
+        UserToken CreateToken(IEnumerable<string> userRoles, string userName, string securityKey, DateTime expiration);
     }
 }

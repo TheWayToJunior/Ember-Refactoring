@@ -6,8 +6,8 @@ namespace Ember.Application.Interfaces
 {
     public interface IAuthenticationServices
     {
-        Task<IResult<UserTokenResponse>> RegistrationAsync(AuthenticationReques reques);
+        Task<IResult<UserToken>> RegistrationAsync(AuthenticationReques reques);
 
-        Task<IResult<UserTokenResponse>> LoginAsync(AuthenticationReques reques);
+        Task<IResult<UserToken>> LoginAsync(AuthenticationReques reques);
     }
 }

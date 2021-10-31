@@ -18,13 +18,13 @@ namespace Ember.Server.Controllers
         }
 
         [HttpPost("Registration")]
-        public async Task<ActionResult<UserTokenResponse>> RegistrationAsync([FromBody] AuthenticationReques reques)
+        public async Task<ActionResult<UserToken>> RegistrationAsync([FromBody] AuthenticationReques reques)
         {
             return Ok(await _authenticationServices.RegistrationAsync(reques));
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<IResult<UserTokenResponse>>> LoginAsync([FromBody] AuthenticationReques reques)
+        public async Task<ActionResult<IResult<UserToken>>> LoginAsync([FromBody] AuthenticationReques reques)
         {
             return Ok(await _authenticationServices.LoginAsync(reques));
         }

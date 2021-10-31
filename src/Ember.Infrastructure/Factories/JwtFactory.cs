@@ -11,12 +11,12 @@ namespace Ember.Infrastructure.Factories
 {
     class JwtFactory : ITokenFactory
     {
-        public UserTokenResponse CreateToken(IEnumerable<string> userRoles, string userName, string securityKey, DateTime expiration)
+        public UserToken CreateToken(IEnumerable<string> userRoles, string userName, string securityKey, DateTime expiration)
         {
             var claims = CreateClaims(userRoles, userName);
             var securityToken = CreateJwtSecurityToken(claims, securityKey, expiration);
 
-            return new UserTokenResponse()
+            return new UserToken()
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(securityToken),
                 Expiration = expiration
