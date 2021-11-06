@@ -58,12 +58,11 @@ namespace Ember.Infrastructure.Services
         {
             var resultBuilder = OperationResult.CreateBuilder();
 
-            var resultCheckBinding = await CheckBindingAsync(email);
+            var notLinked = await IsNotLinkedAsync(email);
 
-            if (resultCheckBinding.IsSuccess)
+            if (!notLinked.IsSuccess)
             {
-                return resultBuilder.AppendErrors(resultCheckBinding.Errors)
-                    .AppendError("This Email is already linked to the account number").BuildResult();
+                return resultBuilder.AppendErrors(notLinked.Errors).BuildResult();
             }
 
             ApplicationUser user = await _userManager.FindByEmailAsync(email);
@@ -94,12 +93,11 @@ namespace Ember.Infrastructure.Services
         {
             var resultBuilder = OperationResult.CreateBuilder();
 
-            var bindingCheack = await CheckBindingAsync(email);
+            var notLinked = await IsNotLinkedAsync(email);
 
-            if (!bindingCheack.IsSuccess)
+            if (notLinked.IsSuccess)
             {
-                return resultBuilder.AppendErrors(bindingCheack.Errors)
-                    .BuildResult();
+                return resultBuilder.AppendErrors(notLinked.Errors).BuildResult();
             }
 
             var binding = await _context.UsersAccounts.Include(ua => ua.User)
@@ -137,7 +135,7 @@ namespace Ember.Infrastructure.Services
                 .BuildResult();
         }
 
-        private async Task<IResult> CheckBindingAsync(string email)
+        private async Task<IResult> IsNotLinkedAsync(string email)
         {
             var resultBuilder = OperationResult.CreateBuilder();
 
@@ -152,9 +150,9 @@ namespace Ember.Infrastructure.Services
             var isAny = await _context.UsersAccounts.AnyAsync(ua =>
                 ua.UserId.Equals(user.Id));
 
-            if (!isAny)
+            if (isAny)
             {
-                return resultBuilder.AppendError($"The user: {email} is not linked to the account")
+                return resultBuilder.AppendError($"The user: {email} is already linked to the account number")
                     .BuildResult();
             }
 

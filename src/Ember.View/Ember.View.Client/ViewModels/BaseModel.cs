@@ -17,7 +17,6 @@ namespace Ember.View.Client.ViewModels
         [Inject]
         protected HttpClient HttpClient { get; set; }
 
-
         [Inject]
         protected NavigationManager NavigationManager { get; set; }
     }

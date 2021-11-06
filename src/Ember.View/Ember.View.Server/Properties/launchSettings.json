@@ -1,6 +1,6 @@
 {
     "profiles": {
-      "Kestral": {
+      "Kestrel": {
         "commandName": "Project",
         "dotnetRunMessages": "true",
         "launchBrowser": false,

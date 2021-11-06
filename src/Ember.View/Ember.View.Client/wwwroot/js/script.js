@@ -112,10 +112,10 @@ window.initChartBar = function (weekday) {
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
             datasets: [{
                 label: 'Blue',
-                data: [weekday.monday, weekday.tuesday, weekday.wednesday, weekday.thursday, weekday.friday],
+                data: weekday,
                 backgroundColor: window.chartColors.primary,
                 borderColor: 'transparent'
             }]

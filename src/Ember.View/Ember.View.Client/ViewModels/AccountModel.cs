@@ -65,8 +65,6 @@ namespace Ember.View.Client.ViewModels
         {
             if (IsRelated)
             {
-                Console.WriteLine(IsRelated);
-                Console.WriteLine(Account.Address);
                 await ShowAsync<UnlinkAccount>("Отвязать аккаунт"); return;
             }
 
@@ -91,28 +89,19 @@ namespace Ember.View.Client.ViewModels
 
         private async Task InitChartBar()
         {
-            object weekday = new();
+            List<int> counts = new();
 
             var deys = Account.Payments?.Select(h => h.Date);
 
             if (deys != null)
             {
-                weekday = new
+                foreach (var day in Enum.GetValues<DayOfWeek>())
                 {
-                    Monday = GetQuantityDays(deys, DayOfWeek.Monday),
-                    Tuesday = GetQuantityDays(deys, DayOfWeek.Tuesday),
-                    Wednesday = GetQuantityDays(deys, DayOfWeek.Wednesday),
-                    Thursday = GetQuantityDays(deys, DayOfWeek.Thursday),
-                    Friday = GetQuantityDays(deys, DayOfWeek.Friday),
-                };
+                    counts.Add(deys.Where(d => d.DayOfWeek == day).Count());
+                }
             }
 
-            await JsRuntime.InitChartBar(weekday);
-        }
-
-        private int GetQuantityDays(IEnumerable<DateTime> deys, DayOfWeek day)
-        {
-            return deys.Where(d => d.DayOfWeek == day).Count();
+            await JsRuntime.InitChartBar(counts);
         }
     }
 }
