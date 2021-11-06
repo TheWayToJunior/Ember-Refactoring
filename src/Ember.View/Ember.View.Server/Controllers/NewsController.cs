@@ -5,7 +5,6 @@ using Ember.Application.Features.News.Queries;
 using Ember.Application.Features.News.Queries.GetPage;
 using Ember.Domain;
 using Ember.Domain.Contracts;
-using Ember.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +27,7 @@ namespace Ember.Server.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IResult<GetPageNewsResponse>>> GetAll([FromBody] GetPageNewsQuery query)
+        public async Task<ActionResult<IResult<GetPageNewsResponse>>> GetAll([FromQuery] GetPageNewsQuery query)
         {
             var result = await _mediator.Send(query);
             return Ok(result);

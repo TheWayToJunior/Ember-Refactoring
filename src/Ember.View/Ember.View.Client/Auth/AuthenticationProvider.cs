@@ -13,26 +13,26 @@ using Microsoft.JSInterop;
 
 namespace Ember.Client.Auth
 {
-    public class JWTAuthenticationProvider : AuthenticationStateProvider, ILoginService
+    public class AuthenticationProvider : AuthenticationStateProvider, ILoginService
     {
-        private readonly IJSRuntime jsRuntime;
-        private readonly HttpClient httpClient;
+        private readonly IJSRuntime _jsRuntime;
+        private readonly HttpClient _httpClient;
 
-        private static string tokenKey = "TOKENKEY";
-        private static string tokenLive = "TOKENLIVE";
+        private const string TokenKey = "TOKENKEY";
+        private const string TokenLive = "TOKENLIVE";
 
-        private AuthenticationState Anonymous => new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+        private static AuthenticationState Anonymous => new(new ClaimsPrincipal(new ClaimsIdentity()));
 
-        public JWTAuthenticationProvider(IJSRuntime jsRuntime, HttpClient httpClient)
+        public AuthenticationProvider(IJSRuntime jsRuntime, HttpClient httpClient)
         {
-            this.jsRuntime  = jsRuntime  ?? throw new ArgumentNullException(nameof(jsRuntime));
-            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _jsRuntime  = jsRuntime  ?? throw new ArgumentNullException(nameof(jsRuntime));
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            string token = await jsRuntime.GetFromLocalStorage(tokenKey);
-            string expiration = await jsRuntime.GetFromLocalStorage(tokenLive);
+            string token = await _jsRuntime.GetFromLocalStorage(TokenKey);
+            string expiration = await _jsRuntime.GetFromLocalStorage(TokenLive);
 
             if (string.IsNullOrEmpty(token) && string.IsNullOrEmpty(expiration))
             {
@@ -51,8 +51,8 @@ namespace Ember.Client.Auth
 
         public async Task Login(UserToken userToken)
         {
-            await jsRuntime.SetInLocalStorage(tokenKey, userToken.Token);
-            await jsRuntime.SetInLocalStorage(tokenLive, userToken.Expiration.ToString());
+            await _jsRuntime.SetInLocalStorage(TokenKey, userToken.Token);
+            await _jsRuntime.SetInLocalStorage(TokenLive, userToken.Expiration.ToString());
 
             AuthenticationState authState = BuildAuthenticationState(userToken.Token);
 
@@ -61,17 +61,17 @@ namespace Ember.Client.Auth
 
         public async Task Logout()
         {
-            httpClient.DefaultRequestHeaders.Authorization = null;
+            _httpClient.DefaultRequestHeaders.Authorization = null;
             
-            await jsRuntime.RemoveItem(tokenKey);
-            await jsRuntime.RemoveItem(tokenLive);
+            await _jsRuntime.RemoveItem(TokenKey);
+            await _jsRuntime.RemoveItem(TokenLive);
 
             NotifyAuthenticationStateChanged(Task.FromResult(Anonymous));
         }
 
         private AuthenticationState BuildAuthenticationState(string token)
         {
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
 
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt")));
         }

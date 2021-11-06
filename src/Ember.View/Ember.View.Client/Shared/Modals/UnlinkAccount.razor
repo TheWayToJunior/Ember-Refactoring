@@ -1,0 +1,13 @@
+﻿@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        <p class="mb-0">@_errorMessage</p>
+    </div>
+}
+
+
+    <div class="form-group text-center">
+        <label for="exampleInputPassword1">Вы точно хотите отвязать аккаунт?</label>
+    </div>
+
+    <a class="btn btn-primary" @onclick="@(async () => await UnlinkAsync())">Отвязать</a>

@@ -1,0 +1,49 @@
+﻿@if (ShowErrors)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@_error</p>
+    </div>
+}
+
+<EditForm Model="_news" OnValidSubmit="(async () => await CreateAsync())" @attributes="_formAttributes">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label for="inputTitle">Заголовок статьи</label>
+        <input type="text" class="form-control" id="inputTitle" placeholder="Введите название статьи"
+               @bind="_news.Title">
+        <ValidationMessage For="@(() => _news.Title)" />
+    </div>
+
+    <div class="form-group">
+        <label for="inputImageSrc">Картинка статьи</label>
+        <input type="text" class="form-control" id="inputImageSrc" placeholder="Вставте ссылку на картинку"
+               @bind="_news.ImageSrc">
+        <ValidationMessage For="@(() => _news.ImageSrc)" />
+    </div>
+
+    <div class="form-group">
+        <label for="inputSource">Ссылка на статью</label>
+        <input type="text" class="form-control" id="inputSource" placeholder="Вставте ссылку на статью"
+               @bind="_news.Source">
+        <ValidationMessage For="@(() => _news.Source)" />
+    </div>
+
+    <div class="form-group">
+        <label for="inputCategory">Катигория статьи</label>
+        <select class="form-control" id="inputCategory" @bind="_news.Category">
+            @foreach (var item in Enum.GetValues(typeof(CategoryMode)))
+            {
+                <option>@((CategoryMode)item)</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="inputDescription">Краткое описание статьи</label>
+        <textarea class="form-control" id="inputDescription" rows="3" style="resize:none;"
+                  @bind="_news.Description"></textarea>
+        <ValidationMessage For="@(() => _news.Description)" />
+    </div>
+    <button type="submit" class="btn btn-success">Добавить</button>
+</EditForm>

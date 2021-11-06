@@ -1,14 +1,10 @@
 ﻿@page "/news"
 
 @layout MainLayout
+@inherits NewsModel
 
-@using System.Text.Json
 
-@inject IJSRuntime JsRuntime
-@inject IModalService Modal
-@inject HttpClient HttpClient
-
-<Intro BodyId="@("body")" ImgSource="https://sun9-42.userapi.com/c857420/v857420760/1adb31/vogYSXlKEYw.jpg">
+<Intro BodyId="@("body")" ImgSource="@ImageLinks.NewsIntro">
     <div class="banner-text">
         <h2>Новости</h2>
         <p>
@@ -28,10 +24,10 @@
             <div class="container">
 
                 <div class="news-category">
-                    <Category CurrentCategory="currentCategory" Links="Links" SelectedLink="SelectedLink" />
+                    <Category CurrentCategory="CurrentCategory" Links="Links" SelectedLink="SelectedLinkAsync" />
                 </div>
 
-                @if (news == null)
+                @if (News == null)
                 {
                     <div class="conteiner" style="margin:25px;">
                         <div class="spinner-border text-info text-center" role="status">
@@ -44,15 +40,14 @@
                     <div class="d-flex justify-content-end">
                         <AuthorizeView Roles="@($"{Roles.Admin}, {Roles.Editor}")">
                             <a class="btn btn-success waves-effect" href="javascript:void(0)"
-                               @onclick="@(async ()=> { await CreatePost(); })">
+                               @onclick="@(async ()=> { await CreatePostAsync(); })">
                                 <span class="material-icons text-white">
                                     playlist_add
                                 </span>
                             </a>
                         </AuthorizeView>
                     </div>
-
-                    @foreach (var item in news)
+                    @foreach (var item in News)
                     {
                         <div class="blog-post">
                             <div class="blog-post__img">
@@ -60,7 +55,6 @@
                             </div>
                             <div class="blog-post__info">
                                 <div class="blog-post__date">
-                                    @*<span>@item.Time.Date.DayOfWeek</span>*@
                                     <span>@item.Time.ToLongDateString()</span>
                                 </div>
                                 <h1 class="blog-post__title">@item.Title</h1>
@@ -73,17 +67,15 @@
                                         Подробнее
                                     </a>
                                 </div>
-
                                 <AuthorizeView Roles="@($"{Roles.Admin}, {Roles.Editor}")">
                                     <a class="btn btn-warning waves-effect" href="javascript:void(0)"
-                                       @onclick="async ()=> { await EditPost(item); }">
+                                       @onclick="async ()=> { await EditPostAsync(item); }">
                                         <span class="material-icons text-white">
                                             edit
                                         </span>
                                     </a>
-
                                     <a class="btn btn-danger waves-effect" href="javascript:void(0)"
-                                       @onclick="async ()=> { await DeletePost(item.Id); }">
+                                       @onclick="async ()=> { await DeletePostAsync(item.Id); }">
                                         <span class="material-icons text-white">
                                             delete_forever
                                         </span>
@@ -91,107 +83,12 @@
                                 </AuthorizeView>
                             </div>
                         </div>
-                    }
+                     }
                 }
             </div>
         </div>
-
         <div style="margin-top: 55px;">
-            <Pagination CurrentPage="currentPage" PageQuantity="pageQuantity" Range="2" SelectedPage="SelectedPage" />
+            <Pagination CurrentPage="CurrentPage" PageQuantity="TotalPages" Range="2" SelectedPage="SelectedPageAsync" />
         </div>
     </section>
 </div>
-
-@code
-{
-    private IEnumerable<NewsDto> news = null;
-
-    private Dictionary<string, object> Links =
-        new Dictionary<string, object>
-        {
-            { "Все", CategoryMode.All },
-            { "События", CategoryMode.Events },
-            { "Ремонт", CategoryMode.Repair },
-            { "Экология", CategoryMode.Ecology }
-        };
-
-    int currentPage = 1;
-    CategoryMode currentCategory = CategoryMode.All;
-
-    int pageQuantity;
-    int quantityPerPage = 5;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await GetNews();
-    }
-
-    private async Task SelectedLink(object category)
-    {
-        currentPage = 1;
-        currentCategory = (CategoryMode)category;
-
-        await GetNews();
-    }
-
-    private async Task SelectedPage(int page)
-    {
-        currentPage = page;
-
-        await GetNews();
-        await JsRuntime.ScrollToElementId("body");
-    }
-
-    private async Task GetNews()
-    {
-        var httpResponse = await HttpClient
-            .GetAsync($"api/News?page={currentPage}&quantityPerPage={quantityPerPage}&category={currentCategory}");
-
-        if (httpResponse.IsSuccessStatusCode)
-        {
-            pageQuantity = Convert.ToInt32(httpResponse.Headers.GetValues("pageQuantity").FirstOrDefault());
-
-            var responsString = await httpResponse.Content.ReadAsStringAsync();
-
-            news = JsonSerializer.Deserialize<List<NewsDto>>(responsString,
-                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-        }
-        else
-        {
-            Console.WriteLine(httpResponse.StatusCode);
-        }
-    }
-
-    private async Task CreatePost()
-    {
-        var modal = Modal.Show<CreateNews>($"Добавление новости {DateTime.Now.ToShortDateString()}");
-
-        var result = await modal.Result;
-
-        if (result.Cancelled)
-        {
-            await GetNews();
-        }
-    }
-
-    private async Task EditPost(NewsDto post)
-    {
-        ModalParameters parameters = new ModalParameters();
-        parameters.Add(nameof(EditNews.NewsPost), post);
-
-        var modal = Modal.Show<EditNews>($"Изменить новости {post.Time.ToShortDateString()}", parameters);
-
-        var result = await modal.Result;
-
-        if (result.Cancelled)
-        {
-            await GetNews();
-        }
-    }
-
-    private async Task DeletePost(int id)
-    {
-        await HttpClient.DeleteAsync($"api/News/{id}");
-        await GetNews();
-    }
-}

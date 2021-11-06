@@ -1,0 +1,18 @@
+﻿@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        <p class="mb-0">@_errorMessage</p>
+    </div>
+}
+
+<EditForm Model="_bindingRequest" OnValidSubmit="@(async () => await Bind())">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label for="exampleInputPassword1">Укажите номер лицевого сцета</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Номер счета" @bind="@_bindingRequest.Number">
+        <ValidationMessage For="@(() => _bindingRequest.Number)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Привязать</button>
+</EditForm>

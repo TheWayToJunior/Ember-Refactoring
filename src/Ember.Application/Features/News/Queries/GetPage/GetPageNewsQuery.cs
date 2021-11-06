@@ -6,7 +6,12 @@ namespace Ember.Application.Features.News.Queries.GetPage
 {
     public class GetPageNewsQuery : IRequest<IResult<GetPageNewsResponse>>
     {
-        public GetPageNewsQuery(int page = 1, int pageSize = 5)
+        public GetPageNewsQuery() 
+            : this(page: 1, pageSize: 5)
+        {
+        }
+
+        public GetPageNewsQuery(int page, int pageSize)
         {
             Page = page;
             PageSize = pageSize;

@@ -1,12 +1,8 @@
 ﻿@page "/"
 @layout MainLayout
+@inherits IndexModel
 
-@inject IModalService Modal
-@inject IJSRuntime JsRuntime
-@inject HttpClient HttpClient
-
-<Intro BodyId="@("body")" ImgSource="https://invest26.ru/upload/iblock/400/4002b07f21461f6546535fe41833872b.JPG">
-    @*/img/banner-index.jpg*@
+<Intro BodyId="@("body")" ImgSource="@ImageLinks.IndexIntro">
     <div class="banner-text">
         <h2>СПП Уголек <br> ГП <span>Донбасстепло<span class="text-primary">энерго</span></span></h2>
         <p>
@@ -40,7 +36,7 @@
 
             <div class="work-block" id="work">
                 <div class="center">
-                    @foreach (var slide in slides)
+                    @foreach (var slide in Slides)
                     {
                         <div style="background: #eee; height: 300px">
                             <img src="@slide" />
@@ -109,7 +105,7 @@
                         </a>
                     </div>
 
-                    @if (news == null)
+                    @if (News == null)
                     {
                         <div class="spinner-border text-info" role="status">
                             <span class="sr-only">Loading...</span>
@@ -118,7 +114,7 @@
                     else
                     {
                         <div class="row">
-                            @foreach (var item in news)
+                            @foreach (var item in News)
                             {
                                 <Card Date="@item.Time" ImageSrc="@item.ImageSrc" Source="@item.Source" Title="@item.Title">
                                     <span>
@@ -147,7 +143,7 @@
                 </div>
             </div>
 
-            <Contacts ContactInfo="contacts"
+            <Contacts ContactInfo="Contacts"
                       Image="https://nua.in.ua/wp-content/uploads/2014/03/5571.jpg">
                 <Background>
                     <div id="map"></div>
@@ -156,44 +152,3 @@
         </div>
     </div>
 </div>
-
-@code
-{
-    IEnumerable<(string, string)> contacts = new[]
-    {
-        ("home", "г. Горловка ул. Великан д. 21"),
-        ("email", "miha.smolenskiy2000@mail.ru"),
-        ("phonelink_ring", "+380(95) 091-72-01")
-    };
-
-    string[] slides =
-    {
-        "https://de.com.ua/uploads/thumb/0/home_energyslide/123-E54J1357.jpg",
-        "https://sun9-2.userapi.com/c850720/v850720430/ed5a9/wYDq1V8TND4.jpg",
-        "https://sun9-19.userapi.com/c850632/v850632256/12cc53/KZIhDPJ7bp0.jpg",
-        "https://de.com.ua/uploads/thumb/0/home_energyslide/116-E54J3014.jpg",
-        "https://de.com.ua/uploads/thumb/0/home_energyslide/117-E54J2966.jpg",
-        "https://sun9-28.userapi.com/c854224/v854224084/12aa7f/aJlUY851MCw.jpg"
-    };
-
-    private IEnumerable<NewsDto> news = null;
-
-    int quantityPerPage = 3;
-
-    protected override async Task OnInitializedAsync()
-    {
-        news = (await HttpClient.GetFromJsonAsync<IEnumerable<NewsDto>>($"api/News?quantityPerPage={quantityPerPage}"))
-            .OrderByDescending(n => n.Time);
-
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JsRuntime.InitSlick();
-        }
-
-        await JsRuntime.InitMap();
-    }
-}

@@ -2,7 +2,6 @@
 using Ember.Application.Interfaces.Services;
 using Ember.Domain.Contracts;
 using Ember.Infrastructure.Data;
-using Ember.Infrastructure.Data.Entities;
 using Ember.Infrastructure.Data.Entitys;
 using Ember.Server.Exceptions;
 using Ember.Shared;
@@ -25,7 +24,7 @@ namespace Ember.Infrastructure.Services
 
         private readonly ApplicationDbContext _context;
 
-        public UserRolesService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager,ApplicationDbContext context)
+        public UserRolesService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -37,11 +36,10 @@ namespace Ember.Infrastructure.Services
         {
             var resultBuilder = OperationResult<PaginationResponse<UserRolesDto>>.CreateBuilder();
 
-            var filtered = _context.UserRoles
-                .Include(userRole => userRole.Role)
-                .Include(userRole => userRole.User)
-                .Where(CreatePredicate(roleName))
-                .Select(userRole => userRole.User);
+            var filtered = _context.Users
+                .Include(user => user.UserRoles)
+                .ThenInclude(userRole => userRole.Role)
+                .Where(CreatePredicate(roleName));
 
             var page = await filtered
                 .GetPage(request.Page, request.PageSize)
@@ -54,14 +52,14 @@ namespace Ember.Infrastructure.Services
                 .BuildResult();
         }
 
-        private Expression<Func<ApplicationUserRole, bool>> CreatePredicate(string roleName)
+        private Expression<Func<ApplicationUser, bool>> CreatePredicate(string roleName)
         {
-            var predicate = PredicateBuilder.New<ApplicationUserRole>(true);
+            var predicate = PredicateBuilder.New<ApplicationUser>(true);
 
             if (!string.IsNullOrEmpty(roleName))
             {
-                Expression<Func<ApplicationUserRole, bool>> conditions = userRole =>
-                    userRole.Role.Name.ToLower() == roleName.ToLower();
+                Expression<Func<ApplicationUser, bool>> conditions = user =>
+                    user.UserRoles.Select(ur => ur.Role).Any(r => r.Name.ToLower() == roleName.ToLower());
 
                 predicate.And(conditions);
             }
@@ -77,7 +75,7 @@ namespace Ember.Infrastructure.Services
             }
 
             var roles = await _context.Roles.ToListAsync();
-            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRoles = user.UserRoles.Select(userRole => userRole.Role.Name);
 
             return new UserRolesDto(user.Email, roles.Select(r => r.Name), userRoles);
         }
@@ -85,7 +83,10 @@ namespace Ember.Infrastructure.Services
         public async Task<IResult<UserRolesDto>> GetUserRolesByEmailAsync(string email)
         {
             var resultBuilder = OperationResult<UserRolesDto>.CreateBuilder();
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _context.Users
+                .Include(user => user.UserRoles)
+                .ThenInclude(userRole => userRole.Role)
+                .SingleAsync(user => user.Email.Equals(email));
 
             if (user is null)
             {
@@ -99,13 +100,13 @@ namespace Ember.Infrastructure.Services
             return resultBuilder.SetValue(dto).BuildResult();
         }
 
-        public async Task<IResult<IEnumerable<RoleStatisticsResponse>>> GetRoleStatisticsAsync()
+        public async Task<IResult<IEnumerable<RoleStatistics>>> GetRoleStatisticsAsync()
         {
-            var resultBuilder = OperationResult<IEnumerable<RoleStatisticsResponse>>.CreateBuilder();
+            var resultBuilder = OperationResult<IEnumerable<RoleStatistics>>.CreateBuilder();
 
             var statistics = await _context.Roles
                 .Include(r => r.UserRoles)
-                .Select( r  => new RoleStatisticsResponse 
+                .Select(r => new RoleStatistics
                 {
                     RoleName = r.Name,
                     UsersCount = r.UserRoles.Count

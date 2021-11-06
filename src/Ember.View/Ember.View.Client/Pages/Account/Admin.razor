@@ -1,20 +1,15 @@
 ﻿@page "/account/admin"
-
 @layout AccountLayout
-
 @attribute [Authorize(Roles = "Admin")]
 
-@inject HttpClient HttpClient
-@inject IModalService Modal
-@inject IJSRuntime JsRuntime
-
+@inherits AdminModel
 
 <div class="card md-4 wow fadeIn">
     <div class="card-body d-sm-flex justify-content-between">
-        <Category CurrentCategory="currentCategory" Links="Links" SelectedLink="SelectedLink" />
+        <Category CurrentCategory="CurrentCategory" Links="Links" SelectedLink="SelectedLinkAsync" />
 
         <div class="d-flex justify-content-center pagination-users align-items-center">
-            <Pagination CurrentPage="currentPage" PageQuantity="pageQuantity" Range="2" SelectedPage="SelectedPage" />
+            <Pagination CurrentPage="CurrentPage" PageQuantity="TotalPages" Range="2" SelectedPage="SelectedPageAsync" />
         </div>
     </div>
 </div>
@@ -40,7 +35,7 @@
                 </div>
             </div>
             <div class="card-body">
-                @if (userRoles != null)
+                @if (UserRoles != null)
                 {
                     int i = 1;
 
@@ -53,7 +48,7 @@
                                 <th scope="col">Edit</th>
                             </tr>
                         </thead>
-                        @foreach (var item in userRoles)
+                        @foreach (var item in UserRoles)
                         {
                             <tbody>
                                 <tr>
@@ -62,7 +57,7 @@
                                     <td>@item.UserRoles.FirstOrDefault()</td>
                                     <td>
                                         <a class="btn btn-link @(item.UserRoles.Any(role => role == Roles.Admin) ? "disabled" : null)"
-                                           href="javascript:void(0)" @onclick="@(async () => await ShowEditRoles(item))">Role</a>
+                                           href="javascript:void(0)" @onclick="@(async () => await ShowEditRolesAsync(item))">Role</a>
                                         <a class="btn btn-link" href="javascript:void(0)">Delete</a>
                                     </td>
                                 </tr>
@@ -88,93 +83,3 @@
         </div>
     </div>
 </div>
-
-
-@code {
-    IEnumerable<UserRolesDto> userRoles = null;
-
-    int currentPage = 1;
-    string currentCategory = string.Empty;
-
-    int pageQuantity;
-    int quantityPerPage = 5;
-
-    private Dictionary<string, object> Links =
-        new Dictionary<string, object>
-        {
-            { "All", string.Empty },
-            { "Users", Roles.User },
-            { "Editors", Roles.Editor },
-            { "Admins", Roles.Admin }
-        };
-
-    protected override async Task OnInitializedAsync()
-    {
-        await RefreshPage();
-    }
-
-    private async Task RefreshPage()
-    {
-        await GetUserRoles();
-
-        var statistic = await GetRoleStatistics();
-        //await JsRuntime.InitPieChart(statistic.Users, statistic.Editors, statistic.Admins);
-        await JsRuntime.InitPieChart(1, 1, 1);
-
-        StateHasChanged();
-    }
-
-    private async Task SelectedLink(object category)
-    {
-        currentPage = 1;
-        currentCategory = category.ToString();
-
-        await GetUserRoles();
-    }
-
-    private async Task SelectedPage(int page)
-    {
-        currentPage = page;
-
-        await GetUserRoles();
-    }
-
-    private async Task GetUserRoles()
-    {
-        var httpResponse = await HttpClient
-              .GetAsync($"api/UserRoles?page={currentPage}&quantityPerPage={quantityPerPage}&role={currentCategory}");
-
-        if (httpResponse.IsSuccessStatusCode)
-        {
-            pageQuantity = Convert.ToInt32(httpResponse.Headers.GetValues("pageQuantity").FirstOrDefault());
-            var responsString = await httpResponse.Content.ReadAsStringAsync();
-
-            userRoles = JsonSerializer.Deserialize<List<UserRolesDto>>(responsString,
-                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-        }
-        else
-        {
-            Console.WriteLine(httpResponse.StatusCode);
-        }
-    }
-
-    private async Task<RoleStatisticsResponse> GetRoleStatistics()
-    {
-        return await HttpClient.GetFromJsonAsync<RoleStatisticsResponse>("api/UserRoles/GerRoleStatistics");
-    }
-
-    private async Task ShowEditRoles(UserRolesDto user)
-    {
-        var modalParameters = new ModalParameters();
-
-        modalParameters.Add(nameof(EditRoles.UserRoles), user);
-
-        var modal = Modal.Show<EditRoles>($"Роли {user.Email}", modalParameters);
-        var result = await modal.Result;
-
-        if (result.Cancelled)
-        {
-            await RefreshPage();
-        }
-    }
-}

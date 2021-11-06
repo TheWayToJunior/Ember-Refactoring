@@ -1,6 +1,6 @@
 ﻿namespace Ember.Shared
 {
-    public class RoleStatisticsResponse
+    public class RoleStatistics
     {
         public string RoleName { get; set; }
 

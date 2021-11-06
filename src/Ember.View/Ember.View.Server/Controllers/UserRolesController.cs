@@ -2,6 +2,7 @@
 using Ember.Domain.Contracts;
 using Ember.Infrastructure.Data.Entitys;
 using Ember.Shared;
+using Ember.Shared.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +25,8 @@ namespace Ember.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IResult<IEnumerable<UserRolesDto>>>> GetAll([FromQuery] PaginationRequest pagination,
-            string role = "")
+        public async Task<ActionResult<IResult<PaginationResponse<UserRolesDto>>>> GetAll([FromQuery] PaginationRequest pagination,
+            string role)
         {
             return Ok(await _userRolesService.GetPageUsersWithRolesAsync(pagination, role));
         }
@@ -37,7 +38,7 @@ namespace Ember.Server.Controllers
         }
 
         [HttpGet("GetRoleStatistics")]
-        public async Task<ActionResult<IResult<IEnumerable<RoleStatisticsResponse>>>> GetRoleStatistics()
+        public async Task<ActionResult<IResult<IEnumerable<RoleStatistics>>>> GetRoleStatistics()
         {
             return Ok(await _userRolesService.GetRoleStatisticsAsync());
         }

@@ -1,4 +1,7 @@
-﻿using Microsoft.JSInterop;
+﻿using Ember.Shared;
+using Microsoft.JSInterop;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Ember.Client.Helpers
@@ -40,9 +43,11 @@ namespace Ember.Client.Helpers
             await JSRuntime.InvokeVoidAsync("localStorage.removeItem", key);
         }
 
-        public static async ValueTask InitPieChart(this IJSRuntime JSRuntime, int usets, int editors, int admins)
+        public static async ValueTask InitPieChart(this IJSRuntime JSRuntime, IEnumerable<RoleStatistics> statistics)
         {
-            await JSRuntime.InvokeVoidAsync("initPieChart", usets, editors, admins);
+            await JSRuntime.InvokeVoidAsync("initPieChart", 
+                statistics.Select(rs => rs.RoleName),
+                statistics.Select(rs => rs.UsersCount));
         }
 
         public static async ValueTask InitChartBar(this IJSRuntime JSRuntime, object weekday)

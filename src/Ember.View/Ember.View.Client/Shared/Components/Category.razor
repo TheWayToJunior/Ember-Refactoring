@@ -1,0 +1,12 @@
+﻿<ul class="filter-ul">
+
+    @foreach (var link in links)
+	{
+        <li>
+            <a @onclick="async () => await SelectedLinkInternal(link)"
+               class="@(link.Active ? "active" : null)">
+                <span>@link.Text</span>
+            </a>
+        </li>	 
+	}
+</ul>

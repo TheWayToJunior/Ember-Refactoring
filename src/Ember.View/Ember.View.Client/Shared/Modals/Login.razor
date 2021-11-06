@@ -1,0 +1,25 @@
+﻿@if (ShowErorr)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@_error</p>
+    </div>
+}
+
+<EditForm Model="_userInfo" OnValidSubmit="@(async () => await LoginUser())" @attributes="_editFormAttributes">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label for="exampleInputEmail1">Введите email</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"
+               @bind="@_userInfo.Email">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        <ValidationMessage For="@(() => _userInfo.Email)" />
+    </div>
+
+    <div class="form-group">
+        <label for="exampleInputPassword1">Введите пароль</label>
+        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" @bind="@_userInfo.Password">
+        <ValidationMessage For="@(() => _userInfo.Password)" />
+    </div>
+    <button type="submit" class="btn btn-primary">Войти</button>
+</EditForm>

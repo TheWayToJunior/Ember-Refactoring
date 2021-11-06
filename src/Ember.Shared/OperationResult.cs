@@ -12,7 +12,7 @@ namespace Ember.Shared
             _errors = new List<string>();
         }
 
-        public IEnumerable<string> Errors => _errors;
+        public IEnumerable<string> Errors { get => _errors; set => AddErrors(value); }
 
         public bool IsSuccess => _errors.Count == 0;
 

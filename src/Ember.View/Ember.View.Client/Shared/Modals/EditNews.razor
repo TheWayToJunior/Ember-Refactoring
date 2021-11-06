@@ -1,13 +1,11 @@
-﻿@inject HttpClient http
-
-@if (ShowErrors)
+﻿@if (!string.IsNullOrEmpty(_error))
 {
     <div class="alert alert-danger" role="alert">
-        <p>@Error</p>
+        <p>@_error</p>
     </div>
 }
 
-<EditForm Model="NewsPost" OnValidSubmit="(async () => await CreatePost())" @attributes="EditFormAttributes">
+<EditForm Model="NewsPost" OnValidSubmit="(async () => await EditPostAsync())" @attributes="_editFormAttributes">
     <DataAnnotationsValidator />
 
     <div class="form-group">
@@ -49,42 +47,3 @@
     </div>
     <button type="submit" class="btn btn-warning">Изменить</button>
 </EditForm>
-
-
-@code {
-    [CascadingParameter]
-    BlazoredModalInstance BlazoredModal { get; set; }
-
-    [Parameter]
-    public NewsDto NewsPost { get; set; }
-
-    string Error = "";
-    bool ShowErrors = false;
-
-    Dictionary<string, object> EditFormAttributes =
-        new Dictionary<string, object>
-        {
-            { "style", "min-width:500px;" }
-        };
-
-    private async Task CreatePost()
-    {
-        var httpContent = new StringContent(JsonSerializer.Serialize(NewsPost), Encoding.UTF8, "application/json");
-
-        var httpResponse = await http.PutAsync($"api/news/{NewsPost.Id}", httpContent);
-
-        if (httpResponse.IsSuccessStatusCode)
-        {
-            BlazoredModal.Close(ModalResult.Cancel());
-        }
-        else
-        {
-            var responsString = await httpResponse.Content.ReadAsStringAsync();
-
-            Error = responsString;
-
-            ShowErrors = true;
-        }
-    }
-}
-

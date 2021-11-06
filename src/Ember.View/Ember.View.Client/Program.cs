@@ -19,11 +19,9 @@ namespace Ember.Client
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddScoped<JWTAuthenticationProvider>()
-                .AddScoped<AuthenticationStateProvider, JWTAuthenticationProvider>(provider => 
-                    provider.GetRequiredService<JWTAuthenticationProvider>())
-                .AddScoped<ILoginService, JWTAuthenticationProvider>(provider => 
-                    provider.GetRequiredService<JWTAuthenticationProvider>());
+            builder.Services.AddScoped<AuthenticationProvider>()
+                .AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<AuthenticationProvider>())
+                .AddScoped<ILoginService>(provider => provider.GetRequiredService<AuthenticationProvider>());
 
             builder.Services.AddAuthorizationCore();
             builder.Services.AddBlazoredModal();

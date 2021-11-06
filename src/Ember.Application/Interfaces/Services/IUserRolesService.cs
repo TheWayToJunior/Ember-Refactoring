@@ -12,7 +12,7 @@ namespace Ember.Application.Interfaces.Services
 
         Task<IResult<UserRolesDto>> GetUserRolesByEmailAsync(string email);
 
-        Task<IResult<IEnumerable<RoleStatisticsResponse>>> GetRoleStatisticsAsync();
+        Task<IResult<IEnumerable<RoleStatistics>>> GetRoleStatisticsAsync();
 
         Task<IResult> EditUserRolesAsync(string email, IEnumerable<string> roles);
     }
