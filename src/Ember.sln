@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ember.View.Client", "Ember.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ember.Shared", "Ember.Shared\Ember.Shared.csproj", "{0101DB55-5E6E-45E1-A0DB-18CFBD975EF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ember.Tests", "Ember.Tests\Ember.Tests.csproj", "{DB8A63B3-438C-4B58-A012-561C280A0723}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ember.Tests", "Ember.Tests\Ember.Tests.csproj", "{DB8A63B3-438C-4B58-A012-561C280A0723}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

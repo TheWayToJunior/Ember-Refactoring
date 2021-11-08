@@ -2,6 +2,7 @@
 using Ember.Shared;
 using Ember.View.Client.Helpers;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -14,10 +15,10 @@ namespace Ember.View.Client.Shared.Modals
     public partial class Login
     {
         private string _error = string.Empty;
-        public bool ShowErorr => !string.IsNullOrEmpty(_error);
+
+        private AuthenticationReques _userInfo;
 
         private readonly Dictionary<string, object> _editFormAttributes;
-        private AuthenticationReques _userInfo;
 
         public Login()
         {
@@ -28,6 +29,11 @@ namespace Ember.View.Client.Shared.Modals
 
             _userInfo = new AuthenticationReques();
         }
+
+        public bool ShowErorr => !string.IsNullOrEmpty(_error);
+
+        [CascadingParameter]
+        private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
         [Inject]
         private HttpClient Http { get; set; }
@@ -49,11 +55,28 @@ namespace Ember.View.Client.Shared.Modals
                 var userToken = await httpResponse.Content.DeserializeResultAsync<UserToken>();
 
                 await LoginService.Login(userToken);
-                NavigationManager.NavigateTo("/account");
+                await NavigateToAsync();
             }
             catch (Exception ex)
             {
                 _error = ex.Message;
+            }
+        }
+
+        private async Task NavigateToAsync()
+        {
+            var authenticationState = await AuthenticationStateTask;
+
+            if (authenticationState?.User?.Identity?.IsAuthenticated ?? false)
+            {
+                var returnUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+                if (!string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    NavigationManager.NavigateTo($"/{returnUrl}"); return;
+                }
+
+                NavigationManager.NavigateTo("/account");
             }
         }
     }

@@ -2,7 +2,18 @@
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(EmptyLayoute)">
             <NotAuthorized>
-                <Login />
+                <AuthorizeView Context="authenticated">
+                    <Authorized Context="authenticated">
+                        <AuthorizeView Roles="Admin" Context="role">
+                            <NotAuthorized Context="role">
+                                <ForbiddenView />
+                            </NotAuthorized>
+                        </AuthorizeView>
+                    </Authorized>
+                    <NotAuthorized Context="authenticated">
+                        <Login />
+                    </NotAuthorized>
+                </AuthorizeView>
             </NotAuthorized>
         </AuthorizeRouteView>
     </Found>

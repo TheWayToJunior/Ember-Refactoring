@@ -1,0 +1,34 @@
+﻿@inject NavigationManager Navigation
+
+<div class="forbidden-container">
+    <section class="forbidden">
+        <h3>403</h3>
+        <p>You do not have permission to view this directory.</p>
+        <span id='r'>Returning to home page: <i>@Count</i></span>
+    </section>
+</div>
+
+@code {
+    public int Count { get; set; } = 6;
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await RedirectionDelayAsync("/"); /// Redirect to Index page
+        }
+    }
+
+    private async Task RedirectionDelayAsync(string uri)
+    {
+        while (Count > 0)
+        {
+            await Task.Delay(1000);
+            Count--;
+
+            StateHasChanged();
+        }
+
+        Navigation.NavigateTo(uri);
+    }
+}

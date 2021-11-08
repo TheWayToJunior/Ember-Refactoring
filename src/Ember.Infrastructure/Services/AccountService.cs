@@ -9,6 +9,7 @@ using Ember.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Ember.Infrastructure.Services
@@ -40,7 +41,7 @@ namespace Ember.Infrastructure.Services
 
             UserAccount userAccount = await _context.UsersAccounts
                 .Include(ua => ua.Account)
-                .Include(ua => ua.Account.Payments)
+                .Include(ua => ua.Account.Payments.OrderByDescending(p => p.Date))
                 .FirstOrDefaultAsync(us => us.UserId.Equals(user.Id));
 
             if (userAccount is null)

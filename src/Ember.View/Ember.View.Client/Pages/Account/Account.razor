@@ -33,7 +33,7 @@ else
                     </div>
                 </div>
                 <div class="col-xl-4">
-                    <div class="stats stats-success waves-effect">
+                    <div class="stats stats-success waves-effect" @onclick="@(async () => await ShowPaymentModalAsync())">
                         <h3 class="stats-title"> Оплата </h3>
                         <div class="stats-content">
                             <div class="stats-icon">
@@ -102,7 +102,7 @@ else
                                 @if (Account.Payments != null)
                                 {
 
-                                    @foreach (var item in Account.Payments.OrderBy(h => h.Date))
+                                    @foreach (var item in Account.Payments)
                                     {
                                         <a href="#!" class="notification">
                                             <div class="notification-icon">

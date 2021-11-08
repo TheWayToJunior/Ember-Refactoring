@@ -1,0 +1,12 @@
+﻿@inherits Microsoft.AspNetCore.Components.Forms.InputText
+
+<input @attributes="@AdditionalAttributes" class="@CssClass" @bind="@CurrentValueAsString" @bind:event="oninput" maxlength="@MaxLength" placeholder="@Placeholder"/>
+
+@code
+{
+    [Parameter]
+    public int? MaxLength { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+}

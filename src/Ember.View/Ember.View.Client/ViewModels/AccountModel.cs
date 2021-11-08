@@ -61,23 +61,38 @@ namespace Ember.View.Client.ViewModels
             }
         }
 
-        public async Task ShowModalAsync()
+        public async Task ShowPaymentModalAsync()
         {
             if (IsRelated)
             {
-                await ShowAsync<UnlinkAccount>("Отвязать аккаунт"); return;
+                var parameter = (nameof(Account), Account);
+                await ShowAsync<Payment>("Оплата счета", parameter);
             }
-
-            await ShowAsync<BindAccount>("Привязать аккаунт");
         }
 
-        private async Task ShowAsync<T>(string title)
+        public async Task ShowModalAsync()
+        {
+            var parameter = (nameof(BindAccount.Email), Email);
+
+            if (IsRelated)
+            {
+                await ShowAsync<UnlinkAccount>("Отвязать аккаунт", parameter); return;
+            }
+
+            await ShowAsync<BindAccount>("Привязать аккаунт", parameter);
+        }
+
+        private async Task ShowAsync<T>(string title, params (string, object)[] parameters)
             where T : ComponentBase
         {
-            ModalParameters parameters = new();
-            parameters.Add(nameof(BindAccount.Email), Email);
+            ModalParameters modalParameters = new();
+            foreach ((string name, object value) in parameters)
+            {
+                modalParameters.Add(name, value);
+            }
 
-            var modal = Modal.Show<T>(title, parameters);
+
+            var modal = Modal.Show<T>(title, modalParameters);
 
             var result = await modal.Result;
 
