@@ -22,7 +22,7 @@ namespace Ember.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IResult<AccountDto>>> GetAccountAsync([FromQuery] string email)
+        public async Task<ActionResult<IResult<AccountDTO>>> GetAccountAsync([FromQuery] string email)
         {
             return Ok(await _service.GetAccountAsync(email));
         }

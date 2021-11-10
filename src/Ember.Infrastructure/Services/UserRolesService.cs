@@ -32,9 +32,9 @@ namespace Ember.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<IResult<PaginationResponse<UserRolesDto>>> GetPageUsersWithRolesAsync(PaginationRequest request, string roleName)
+        public async Task<IResult<PaginationResponse<UserRolesDTO>>> GetPageUsersWithRolesAsync(PaginationRequest request, string roleName)
         {
-            var resultBuilder = OperationResult<PaginationResponse<UserRolesDto>>.CreateBuilder();
+            var resultBuilder = OperationResult<PaginationResponse<UserRolesDTO>>.CreateBuilder();
 
             var filtered = _context.Users
                 .Include(user => user.UserRoles)
@@ -47,7 +47,7 @@ namespace Ember.Infrastructure.Services
 
             var dtos = await page.SelectAsync(async user => await MapAsync(user));
 
-            return resultBuilder.SetValue(new PaginationResponse<UserRolesDto>(dtos, request.Page, request.PageSize,
+            return resultBuilder.SetValue(new PaginationResponse<UserRolesDTO>(dtos, request.Page, request.PageSize,
                 await filtered.CountAsync()))
                 .BuildResult();
         }
@@ -67,7 +67,7 @@ namespace Ember.Infrastructure.Services
             return predicate;
         }
 
-        private async Task<UserRolesDto> MapAsync(ApplicationUser user)
+        private async Task<UserRolesDTO> MapAsync(ApplicationUser user)
         {
             if (user == null)
             {
@@ -77,12 +77,12 @@ namespace Ember.Infrastructure.Services
             var roles = await _context.Roles.ToListAsync();
             var userRoles = user.UserRoles.Select(userRole => userRole.Role.Name);
 
-            return new UserRolesDto(user.Email, roles.Select(r => r.Name), userRoles);
+            return new UserRolesDTO(user.Email, roles.Select(r => r.Name), userRoles);
         }
 
-        public async Task<IResult<UserRolesDto>> GetUserRolesByEmailAsync(string email)
+        public async Task<IResult<UserRolesDTO>> GetUserRolesByEmailAsync(string email)
         {
-            var resultBuilder = OperationResult<UserRolesDto>.CreateBuilder();
+            var resultBuilder = OperationResult<UserRolesDTO>.CreateBuilder();
             var user = await _context.Users
                 .Include(user => user.UserRoles)
                 .ThenInclude(userRole => userRole.Role)

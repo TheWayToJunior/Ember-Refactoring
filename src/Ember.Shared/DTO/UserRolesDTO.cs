@@ -2,15 +2,15 @@
 
 namespace Ember.Shared
 {
-    public class UserRolesDto
+    public class UserRolesDTO
     {
-        public UserRolesDto()
+        public UserRolesDTO()
         {
             Roles = new List<string>();
             UserRoles = new List<string>();
         }
 
-        public UserRolesDto(string email, IEnumerable<string> roles, IEnumerable<string> userRoles)
+        public UserRolesDTO(string email, IEnumerable<string> roles, IEnumerable<string> userRoles)
         {
             Email = email;
             Roles = roles;

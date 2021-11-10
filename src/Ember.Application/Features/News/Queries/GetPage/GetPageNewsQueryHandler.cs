@@ -44,7 +44,7 @@ namespace Ember.Application.Features.News.Queries.GetPage
 
             var response = new GetPageNewsResponse()
             {
-                Values = _mapper.Map<IEnumerable<NewsDto>>(entities),
+                Values = _mapper.Map<IEnumerable<NewsDTO>>(entities),
                 Page = request.Page,
                 PageSize = request.PageSize,
                 TotalSize = await Task.Run(() => filtered.Count())

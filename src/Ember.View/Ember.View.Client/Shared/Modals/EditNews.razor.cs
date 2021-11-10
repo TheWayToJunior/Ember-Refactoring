@@ -1,6 +1,6 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
-using Ember.Shared.Models;
+using Ember.Shared;
 using Ember.View.Client.Helpers;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace Ember.View.Client.Shared.Modals
         public BlazoredModalInstance BlazoredModal { get; set; }
 
         [Parameter]
-        public NewsDto NewsPost { get; set; }
+        public NewsDTO NewsPost { get; set; }
 
         [Inject]
         public HttpClient HttpClient { get; set; }

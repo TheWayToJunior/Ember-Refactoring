@@ -1,7 +1,7 @@
 ﻿body {
     margin: 0;
     padding: 0;
-    font-family: 'Open Sans', sans-serif;
+    font-family: Calibri, sans-serif !important;
     min-width: 765px;
     position: relative;
 }
@@ -9,6 +9,8 @@
 h1, h2, h3, h4, h5, h6 {
     margin: 5px; /*10px*/
     padding: 0;
+    font-family: Calibri, sans-serif !important;
+    font-weight: 400;
 }
 
 li {
@@ -90,7 +92,7 @@ a:hover {
     color: #2196f3;
     text-transform: uppercase;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 14px;
 }
 
     .linck:hover {
@@ -263,6 +265,7 @@ a:hover {
 
     .banner-text p {
         margin-top: 25px;
+        font-size: 16px;
     }
 
 .banner-buttom {
@@ -596,12 +599,12 @@ nav ul li a:hover::after {
 .news-card {
     position: relative;
     height: 400px; /*100%;*/
-    /*box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);*/
-    /*box-shadow: none;*/
+    box-shadow: 0px 1.1px 15.3px -71px rgba(0, 0, 0, -0.105), 0px 3.1px 42.2px -71px rgba(0, 0, 0, -0.11), 0px 7.5px 101.6px -71px rgba(0, 0, 0, -0.033), 0px 25px 337px -71px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     border: #fff;
     border-radius: 0;
     /*border: 1px solid #e3e3e3;*/
+    /*    box-shadow: 0 1.4rem 8rem rgba(0, 0, 0, 0.2);*/
 }
 
     /*.card:hover {
@@ -611,13 +614,14 @@ nav ul li a:hover::after {
 .news-card-img {
     height: 100%;
     overflow: hidden;
-    min-height: 450px;
+/*    min-height: 450px;*/
 }
 
 .img-responsive {
-    position:relative;
+    position: relative;
     width: 100%;
-    min-height: 75%;
+    height: 57%;
+/*    min-height: 75%;*/
     transition: 0.5s;
 }
 
@@ -653,6 +657,10 @@ nav ul li a:hover::after {
     transition: 0.5s;
 }
 
+.news-lable, .news-header {
+    font-weight: bold;
+}
+
 .news-card .news-content .time a {
     text-decoration: none;
     padding-right: 10px;
@@ -667,7 +675,7 @@ nav ul li a:hover::after {
     margin: 0;
     padding: 10px 2px;
     height: 75px;
-    font-size: 28px;
+    font-size: 20px;
     overflow: hidden;
 }
 
@@ -741,7 +749,7 @@ nav ul li a:hover::after {
         top: 0;
         left: 0;
         box-shadow: 0.5rem 0.5rem 3rem 1px rgba(0,0,0, 0.5);
-        border-radius: 0.8rem;
+/*        border-radius: 0.8rem;*/
     }
 
     .blog-post__img img {
@@ -770,7 +778,7 @@ nav ul li a:hover::after {
 
 .blog-post__text {
     margin-bottom: 3rem;
-    font-size: 14px;
+    font-size: 16px;
     color: rgba(0, 0, 0, 0.7);
 }
 
@@ -899,6 +907,7 @@ footer a i {
             margin-bottom: 15px;
             letter-spacing: 0.2px;
             color: #384554;
+            font-weight: 600;
         }
 
             .contact-block_info ul li i {
@@ -917,13 +926,14 @@ footer a i {
     align-items:center;
     width: 100%;
     border: 1px solid #eee;
+    justify-content: center;
 }
 
 .contact-block_button a{
     display: flex;
     align-items: center;
     box-shadow: none !important;
-    margin: 0 !important;
+/*    margin: 0 !important;*/
 }
     .contact-block_button a i{
         font-size: 14px !important;

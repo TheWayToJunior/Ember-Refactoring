@@ -2,7 +2,7 @@
 
 namespace Ember.Shared
 {
-    public class AccountDto 
+    public class AccountDTO
     {
         public int Id { get; set; }
 
@@ -12,6 +12,6 @@ namespace Ember.Shared
 
         public string Address { get; set; }
 
-        public virtual IEnumerable<PaymentDto> Payments { get; set; }
+        public virtual IEnumerable<PaymentDTO> Payments { get; set; }
     }
 }

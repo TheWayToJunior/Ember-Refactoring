@@ -1,12 +1,10 @@
 ﻿using Ember.Application.Interfaces.Services;
 using Ember.Domain.Contracts;
-using Ember.Infrastructure.Data.Entitys;
 using Ember.Shared;
 using Ember.Shared.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -25,14 +23,14 @@ namespace Ember.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IResult<PaginationResponse<UserRolesDto>>>> GetAll([FromQuery] PaginationRequest pagination,
+        public async Task<ActionResult<IResult<PaginationResponse<UserRolesDTO>>>> GetAll([FromQuery] PaginationRequest pagination,
             string role)
         {
             return Ok(await _userRolesService.GetPageUsersWithRolesAsync(pagination, role));
         }
 
         [HttpGet("GetByEmail")]
-        public async Task<ActionResult<IResult<UserRolesDto>>> GetByEmail([FromQuery] string email)
+        public async Task<ActionResult<IResult<UserRolesDTO>>> GetByEmail([FromQuery] string email)
         {
             return Ok(await _userRolesService.GetUserRolesByEmailAsync(email));
         }

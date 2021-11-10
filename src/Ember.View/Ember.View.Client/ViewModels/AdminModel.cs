@@ -28,7 +28,7 @@ namespace Ember.View.Client.ViewModels
             CurrentCategory = string.Empty;
         }
 
-        public IEnumerable<UserRolesDto> UserRoles { get; private set; }
+        public IEnumerable<UserRolesDTO> UserRoles { get; private set; }
 
         public IDictionary<string, object> Links { get; }
 
@@ -79,7 +79,7 @@ namespace Ember.View.Client.ViewModels
             }
 
             var responsString = await httpResponse.Content.ReadAsStringAsync();
-            var response = ResultSerializer.Deserialize<PaginationResponse<UserRolesDto>>(responsString);
+            var response = ResultSerializer.Deserialize<PaginationResponse<UserRolesDTO>>(responsString);
 
             UserRoles = response.Values;
             TotalPages = response.TotalPages;
@@ -98,7 +98,7 @@ namespace Ember.View.Client.ViewModels
             return ResultSerializer.Deserialize<IEnumerable<RoleStatistics>>(responsString);
         }
 
-        public async Task ShowEditRolesAsync(UserRolesDto user)
+        public async Task ShowEditRolesAsync(UserRolesDTO user)
         {
             var modalParameters = new ModalParameters();
 

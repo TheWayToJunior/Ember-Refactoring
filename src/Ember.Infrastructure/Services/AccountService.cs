@@ -27,9 +27,9 @@ namespace Ember.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task<IResult<AccountDto>> GetAccountAsync(string email)
+        public async Task<IResult<AccountDTO>> GetAccountAsync(string email)
         {
-            var resultBuilder = OperationResult<AccountDto>.CreateBuilder();
+            var resultBuilder = OperationResult<AccountDTO>.CreateBuilder();
 
             IUser user = await _userManager.FindByEmailAsync(email);
 
@@ -51,7 +51,7 @@ namespace Ember.Infrastructure.Services
             }
 
             return resultBuilder.SetValue(
-                _mapper.Map<AccountDto>(userAccount.Account))
+                _mapper.Map<AccountDTO>(userAccount.Account))
                 .BuildResult();
         }
 

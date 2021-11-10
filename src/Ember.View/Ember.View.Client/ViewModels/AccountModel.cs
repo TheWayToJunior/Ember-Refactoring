@@ -17,13 +17,13 @@ namespace Ember.View.Client.ViewModels
         [Inject]
         public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
-        public AccountDto Account { get; private set; }
+        public AccountDTO Account { get; private set; }
 
         public string Email { get; private set; }
 
         private bool IsRelated => !string.IsNullOrEmpty(Account.Number);
 
-        private static AccountDto EmptyAccount => new();
+        private static AccountDTO EmptyAccount => new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -52,7 +52,7 @@ namespace Ember.View.Client.ViewModels
 
             try
             {
-                Account = await httpResponse.Content.DeserializeResultAsync<AccountDto>();
+                Account = await httpResponse.Content.DeserializeResultAsync<AccountDTO>();
             }
             catch (Exception ex)
             {

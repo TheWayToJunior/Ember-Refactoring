@@ -1,7 +1,7 @@
 ﻿using Blazored.Modal;
 using Ember.Client.Helpers;
 using Ember.Domain;
-using Ember.Shared.Models;
+using Ember.Shared;
 using Ember.Shared.Responses;
 using Ember.View.Client.Helpers;
 using Ember.View.Client.Shared.Modals;
@@ -30,7 +30,7 @@ namespace Ember.View.Client.ViewModels
             CurrentCategory = CategoryMode.All;
         }
 
-        public IEnumerable<NewsDto> News { get; private set; }
+        public IEnumerable<NewsDTO> News { get; private set; }
 
         public IDictionary<string, object> Links { get; }
 
@@ -72,7 +72,7 @@ namespace Ember.View.Client.ViewModels
             }
 
             var responsString = await httpResponse.Content.ReadAsStringAsync();
-            var response = ResultSerializer.Deserialize<PaginationResponse<NewsDto>>(responsString);
+            var response = ResultSerializer.Deserialize<PaginationResponse<NewsDTO>>(responsString);
 
             News = response.Values;
             TotalPages = response.TotalPages;
@@ -90,7 +90,7 @@ namespace Ember.View.Client.ViewModels
             }
         }
 
-        public async Task EditPostAsync(NewsDto post)
+        public async Task EditPostAsync(NewsDTO post)
         {
             ModalParameters parameters = new();
             parameters.Add(nameof(EditNews.NewsPost), post);

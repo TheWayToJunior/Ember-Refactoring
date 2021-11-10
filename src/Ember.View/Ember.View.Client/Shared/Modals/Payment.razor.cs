@@ -39,7 +39,7 @@ namespace Ember.View.Client.Shared.Modals
         public BlazoredModalInstance BlazoredModal { get; set; }
 
         [Parameter]
-        public AccountDto Account { get; set; }
+        public AccountDTO Account { get; set; }
 
         public EditContext EditContext { get; set; }
 
@@ -78,6 +78,7 @@ namespace Ember.View.Client.Shared.Modals
 
             if (string.IsNullOrEmpty(error))
             {
+                await Task.Delay(300);
                 BlazoredModal.Close(ModalResult.Cancel());
             }
         }

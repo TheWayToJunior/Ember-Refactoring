@@ -1,6 +1,6 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
-using Ember.Shared.Models;
+using Ember.Shared;
 using Ember.View.Client.Helpers;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -16,7 +16,7 @@ namespace Ember.View.Client.Shared.Modals
     {
         private string _error = string.Empty;
 
-        private NewsDto _news;
+        private NewsDTO _news;
         private IDictionary<string, object> _formAttributes;
 
         public CreateNews()

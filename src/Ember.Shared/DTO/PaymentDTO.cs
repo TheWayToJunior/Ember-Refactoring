@@ -2,7 +2,7 @@
 
 namespace Ember.Shared
 {
-    public class PaymentDto
+    public class PaymentDTO
     {
         public decimal Amount { get; set; }
 

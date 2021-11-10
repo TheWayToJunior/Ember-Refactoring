@@ -25,7 +25,7 @@ namespace Ember.View.Client.Shared.Modals
         public BlazoredModalInstance BlazoredModal { get; set; }
 
         [Parameter]
-        public UserRolesDto UserRoles { get; set; }
+        public UserRolesDTO UserRoles { get; set; }
 
         private bool ShowErrors => !string.IsNullOrEmpty(_error);
 

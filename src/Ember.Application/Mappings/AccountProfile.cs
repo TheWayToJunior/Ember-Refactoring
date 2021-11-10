@@ -8,7 +8,7 @@ namespace Ember.Application.Mappings
     {
         public AccountProfile()
         {
-            CreateMap<Account, AccountDto>();
+            CreateMap<Account, AccountDTO>();
         }
     }
 }

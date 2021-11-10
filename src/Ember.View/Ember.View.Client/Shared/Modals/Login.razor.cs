@@ -73,6 +73,7 @@ namespace Ember.View.Client.Shared.Modals
 
                 if (!string.IsNullOrWhiteSpace(returnUrl))
                 {
+                    Console.WriteLine(returnUrl);
                     NavigationManager.NavigateTo($"/{returnUrl}"); return;
                 }
 

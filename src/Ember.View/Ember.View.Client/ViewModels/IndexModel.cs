@@ -1,5 +1,5 @@
 ﻿using Ember.Client.Helpers;
-using Ember.Shared.Models;
+using Ember.Shared;
 using Ember.Shared.Responses;
 using Ember.View.Client.Helpers;
 using System;
@@ -16,8 +16,8 @@ namespace Ember.View.Client.ViewModels
         {
             Contacts = new[]
             {
-                ("home", "г. Горловка ул. Великан д. 21"),
-                ("email", "miha.smolenskiy2000@mail.ru"),
+                ("home", "г. Горловка ул. Ушева 21"),
+                ("email", "gpdonbass@gmail.com"),
                 ("phonelink_ring", "+380(95) 091-72-01")
             };
 
@@ -36,7 +36,7 @@ namespace Ember.View.Client.ViewModels
 
         public string[] Slides { get; }
 
-        public IEnumerable<NewsDto> News { get; private set; }
+        public IEnumerable<NewsDTO> News { get; private set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -49,7 +49,7 @@ namespace Ember.View.Client.ViewModels
             }
 
             var responsString = await httpResponse.Content.ReadAsStringAsync();
-            var response = ResultSerializer.Deserialize<PaginationResponse<NewsDto>>(responsString);
+            var response = ResultSerializer.Deserialize<PaginationResponse<NewsDTO>>(responsString);
 
             News = response.Values;
 

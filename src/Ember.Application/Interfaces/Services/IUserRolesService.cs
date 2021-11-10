@@ -8,9 +8,9 @@ namespace Ember.Application.Interfaces.Services
 {
     public interface IUserRolesService
     {
-        Task<IResult<PaginationResponse<UserRolesDto>>> GetPageUsersWithRolesAsync(PaginationRequest request, string roleFilter);
+        Task<IResult<PaginationResponse<UserRolesDTO>>> GetPageUsersWithRolesAsync(PaginationRequest request, string roleFilter);
 
-        Task<IResult<UserRolesDto>> GetUserRolesByEmailAsync(string email);
+        Task<IResult<UserRolesDTO>> GetUserRolesByEmailAsync(string email);
 
         Task<IResult<IEnumerable<RoleStatistics>>> GetRoleStatisticsAsync();
 

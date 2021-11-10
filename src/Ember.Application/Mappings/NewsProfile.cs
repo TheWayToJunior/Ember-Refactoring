@@ -3,7 +3,7 @@ using Ember.Application.Dto;
 using Ember.Application.Features.News.Commands.Create;
 using Ember.Application.Features.News.Commands.Update;
 using Ember.Domain;
-using Ember.Shared.Models;
+using Ember.Shared;
 
 namespace Ember.Application.Mappings
 {
@@ -11,7 +11,7 @@ namespace Ember.Application.Mappings
     {
         public NewsProfile()
         {
-            CreateMap<News, NewsDto>();
+            CreateMap<News, NewsDTO>();
             CreateMap<News, GetNewsResponse>();
 
             CreateMap<CreateNewsCommand, News>()

@@ -2,9 +2,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ember.Shared.Models
+namespace Ember.Shared
 {
-    public class NewsDto
+    public class NewsDTO
     {
         [Required]
         public int Id { get; set; }

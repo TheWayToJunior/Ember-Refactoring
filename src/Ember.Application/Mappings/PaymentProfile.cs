@@ -8,7 +8,7 @@ namespace Ember.Application.Mappings
     {
         public PaymentProfile()
         {
-            CreateMap<Payment, PaymentDto>();
+            CreateMap<Payment, PaymentDTO>();
         }
     }
 }

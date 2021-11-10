@@ -6,7 +6,7 @@ namespace Ember.Application.Interfaces
 {
     public interface IAccountService
     {
-        Task<IResult<AccountDto>> GetAccountAsync(string email);
+        Task<IResult<AccountDTO>> GetAccountAsync(string email);
 
         Task<IResult> BindAsync(string email, string numberAccount);
 
