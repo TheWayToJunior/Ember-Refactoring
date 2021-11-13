@@ -153,14 +153,20 @@ namespace Ember.Infrastructure.Services
         {
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            if (userRoles.Any(role => role == Roles.Admin))
+            /// TODO: Decompose role change rules
+            if (userRoles.Contains(Roles.Admin))
             {
                 throw new NoAccessChangRoleException($"Cannot change the {Roles.Admin} role");
             }
 
-            if (roles.Any(role => role == Roles.Admin))
+            if (roles.Contains(Roles.Admin))
             {
                 throw new NoAccessChangRoleException($"Cannot change the {Roles.Admin} role");
+            }
+
+            if (!roles.Contains(Roles.User))
+            {
+                throw new NoAccessChangRoleException($"Cannot delete the {Roles.User} role");
             }
 
             /// Search for roles that need to be deleted

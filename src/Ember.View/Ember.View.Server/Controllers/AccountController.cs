@@ -11,7 +11,7 @@ namespace Ember.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = Policies.RequireConsumersRole)]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _service;

@@ -94,8 +94,8 @@ window.initPieChart = function (roleNames, roleCounts) {
             labels: roleNames,
             datasets: [{
                 data: roleCounts,
-                backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C"],
-                hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870"]
+                backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#95dd7d"],
+                hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#95dd7d"]
             }]
         },
         options: {

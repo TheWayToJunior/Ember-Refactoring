@@ -39,7 +39,11 @@ namespace Ember.Infrastructure.Services
             var user = new ApplicationUser(reques.Email, userName: reques.Email);
             var result = await _userManager.CreateAsync(user, reques.Password);
 
-            await _userManager.AddToRoleAsync(user, Roles.User);
+            await _userManager.AddToRolesAsync(user, new[]
+            { 
+                Roles.User,
+                Roles.Consumer
+            });
 
             if (!result.Succeeded)
             {

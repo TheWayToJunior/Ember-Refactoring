@@ -18,14 +18,14 @@ namespace Ember.View.Client.ViewModels
         {
             Links = new Dictionary<string, object>
             {
-                { "All",     string.Empty },
-                { "Users",   Roles.User },
-                { "Editors", Roles.Editor },
-                { "Admins",  Roles.Admin }
+                { "All",       Roles.User },
+                { "Consumers", Roles.Consumer },
+                { "Editors",   Roles.Editor },
+                { "Admins",    Roles.Admin }
             };
 
             CurrentPage = 1;
-            CurrentCategory = string.Empty;
+            CurrentCategory = Roles.User;
         }
 
         public IEnumerable<UserRolesDTO> UserRoles { get; private set; }

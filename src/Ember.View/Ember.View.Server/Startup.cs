@@ -1,12 +1,13 @@
 using Ember.Application;
 using Ember.Infrastructure;
+using Ember.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace WebApplication1.Server
+namespace Ember.Server
 {
     public class Startup
     {
@@ -27,7 +28,14 @@ namespace WebApplication1.Server
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddMvcCore()
-                .AddAuthorization();
+                .AddAuthorization(options =>
+                {
+                    options.AddPolicy(Policies.RequireEditorRole, 
+                        policy => policy.RequireRole(Roles.Admin, Roles.Editor));
+
+                    options.AddPolicy(Policies.RequireConsumersRole,
+                        policy => policy.RequireRole(Roles.Consumer));
+                });
 
             services.AddControllersWithViews();
             services.AddRazorPages();

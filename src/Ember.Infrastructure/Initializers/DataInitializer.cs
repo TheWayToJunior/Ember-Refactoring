@@ -41,7 +41,7 @@ namespace Ember.Infrastructure.Helpers
                 _logger.LogError($"Error: {string.Join("\n", result.Errors.Select(e => e.Description))}");
             }
 
-            await _userManager.AddToRoleAsync(poweruser, "Admin");
+            await _userManager.AddToRolesAsync(poweruser, new[] { Roles.Admin, Roles.User });
             _logger.LogInformation($"Admin created: {poweruser.UserName}");
         }
 
@@ -53,7 +53,7 @@ namespace Ember.Infrastructure.Helpers
 
 
             /// Create roles
-            string[] roleNames = { Roles.Admin, Roles.Editor, Roles.User };
+            string[] roleNames = { Roles.Admin, Roles.Editor, Roles.Consumer, Roles.User };
             _logger.LogInformation("Checking role registration");
 
             foreach (var roleName in roleNames)

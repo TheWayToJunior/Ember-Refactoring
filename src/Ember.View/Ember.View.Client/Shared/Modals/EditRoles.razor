@@ -14,7 +14,7 @@
 
                 <div class="form-check" style="margin: 10px;">
                     <input class="form-check-input" type="checkbox" @bind="@item.IsChosen"
-                           disabled="@(item.Role == Roles.Admin ? "disabled" : null)"/>
+                           disabled="@(SpecialRoles.Contains(item.Role) ? "disabled" : null)"/>
                     <label class="form-check-label">
                         @item.Role
                     </label>

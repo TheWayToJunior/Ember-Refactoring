@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace WebApplication1.Server
+namespace Ember.Server
 {
     public class Program
     {

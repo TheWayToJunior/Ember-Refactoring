@@ -14,6 +14,8 @@ namespace Ember.View.Client.ViewModels
 {
     public class AccountModel : BaseModel
     {
+        private AuthenticationState _authenticationState;
+        
         [Inject]
         public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
@@ -25,11 +27,12 @@ namespace Ember.View.Client.ViewModels
 
         private static AccountDTO EmptyAccount => new();
 
+
         protected override async Task OnInitializedAsync()
         {
-            var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            _authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
-            Email = state.User.Identity.Name;
+            Email = _authenticationState.User.Identity.Name;
             await GetAccountAsync();
         }
 
@@ -63,15 +66,17 @@ namespace Ember.View.Client.ViewModels
 
         public async Task ShowPaymentModalAsync()
         {
-            if (IsRelated)
-            {
-                var parameter = (nameof(Account), Account);
-                await ShowAsync<Payment>("Оплата счета", parameter);
-            }
+            if (!IsRelated) return;
+
+            var parameter = (nameof(Account), Account);
+            await ShowAsync<Payment>("Оплата счета", parameter);
         }
 
         public async Task ShowModalAsync()
         {
+            /// Limiting the ability to link an account for an admin
+            if (!_authenticationState.User.IsInRole(Roles.Consumer)) return;
+
             var parameter = (nameof(BindAccount.Email), Email);
 
             if (IsRelated)

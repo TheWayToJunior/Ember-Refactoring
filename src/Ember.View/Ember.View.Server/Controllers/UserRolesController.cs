@@ -12,7 +12,7 @@ namespace Ember.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Roles.Admin)]
     public class UserRolesController : ControllerBase
     {
         private readonly IUserRolesService _userRolesService;

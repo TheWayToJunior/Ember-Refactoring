@@ -5,6 +5,7 @@ using Ember.Application.Features.News.Queries;
 using Ember.Application.Features.News.Queries.GetPage;
 using Ember.Domain;
 using Ember.Domain.Contracts;
+using Ember.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +16,7 @@ namespace Ember.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Editor")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = Policies.RequireEditorRole)]
     public class NewsController : ControllerBase
     {
         private readonly IMediator _mediator;

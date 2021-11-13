@@ -18,6 +18,13 @@ namespace Ember.View.Client.Shared.Modals
 
         private List<RoleModifier> _modifiers;
 
+        public EditRoles()
+        {
+            SpecialRoles = new[] { Roles.Admin, Roles.User };
+        }
+
+        private IEnumerable<string> SpecialRoles { get; set; }
+
         [Inject]
         public HttpClient HttpClient { get; set; }
 
@@ -28,7 +35,6 @@ namespace Ember.View.Client.Shared.Modals
         public UserRolesDTO UserRoles { get; set; }
 
         private bool ShowErrors => !string.IsNullOrEmpty(_error);
-
 
         protected override void OnParametersSet()
         {
