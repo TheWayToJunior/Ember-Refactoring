@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Ember.Infrastructure.Services
 {
     /// <summary>
-    /// Face payment service
+    /// Fake payment service
     /// </summary>
     public class PaymentService : IPaymentService
     {
