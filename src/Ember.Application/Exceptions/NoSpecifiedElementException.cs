@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ember.Server.Exceptions
+namespace Ember.Exceptions
 {
     public class NoSpecifiedElementException : Exception
     {

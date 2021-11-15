@@ -1,9 +1,9 @@
 ﻿using Ember.Application.Extensions;
 using Ember.Application.Interfaces.Services;
+using Ember.Application.Specification;
 using Ember.Domain.Contracts;
 using Ember.Infrastructure.Data;
 using Ember.Infrastructure.Data.Entitys;
-using Ember.Server.Exceptions;
 using Ember.Shared;
 using Ember.Shared.Responses;
 using LinqKit;
@@ -23,6 +23,7 @@ namespace Ember.Infrastructure.Services
         private readonly RoleManager<ApplicationRole> _roleManager;
 
         private readonly ApplicationDbContext _context;
+        private readonly RolesSpecificationsFactory _specificationsFactory;
 
         public UserRolesService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ApplicationDbContext context)
         {
@@ -30,6 +31,7 @@ namespace Ember.Infrastructure.Services
             _roleManager = roleManager;
 
             _context = context;
+            _specificationsFactory = new();
         }
 
         public async Task<IResult<PaginationResponse<UserRolesDTO>>> GetPageUsersWithRolesAsync(PaginationRequest request, string roleName)
@@ -153,21 +155,8 @@ namespace Ember.Infrastructure.Services
         {
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            /// TODO: Decompose role change rules
-            if (userRoles.Contains(Roles.Admin))
-            {
-                throw new NoAccessChangRoleException($"Cannot change the {Roles.Admin} role");
-            }
-
-            if (roles.Contains(Roles.Admin))
-            {
-                throw new NoAccessChangRoleException($"Cannot change the {Roles.Admin} role");
-            }
-
-            if (!roles.Contains(Roles.User))
-            {
-                throw new NoAccessChangRoleException($"Cannot delete the {Roles.User} role");
-            }
+            var specifications = _specificationsFactory.Create(userRoles, roles);
+            specifications.Inspect();
 
             /// Search for roles that need to be deleted
             var removedRoles = userRoles.Except(roles);

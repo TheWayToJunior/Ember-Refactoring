@@ -6,6 +6,7 @@ using Ember.View.Client.Helpers;
 using Ember.View.Client.Shared.Modals;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Ember.View.Client.ViewModels
@@ -48,8 +49,11 @@ namespace Ember.View.Client.ViewModels
             await GetUserRolesAsync();
 
             var statistic = await GetRoleStatisticsAsync();
-            await JsRuntime.InitPieChart(statistic);
+            var data = statistic
+                .Where(rs => rs.RoleName != Roles.User)
+                .OrderBy(rs => rs.UsersCount);
 
+            await JsRuntime.InitPieChart(data);
             StateHasChanged();
         }
 
