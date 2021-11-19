@@ -33,11 +33,11 @@ namespace Ember.Infrastructure.Data.Repositories
 
             if (!_repositories.ContainsKey(type))
             {
-                var repositotyType = typeof(Repository<,>);
-                var repositotyInstance = Activator.CreateInstance(
-                    repositotyType.MakeGenericType(typeof(TEntity), typeof(TKey)), _context);
+                var repositoryType = typeof(Repository<,>);
+                var repositoryInstance = Activator.CreateInstance(
+                    repositoryType.MakeGenericType(typeof(TEntity), typeof(TKey)), _context);
 
-                _repositories.Add(type, repositotyInstance);
+                _repositories.Add(type, repositoryInstance);
             }
 
             return _repositories[type] as IRepository<TEntity, TKey>;

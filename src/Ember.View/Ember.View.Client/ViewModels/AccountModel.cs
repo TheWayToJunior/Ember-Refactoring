@@ -15,7 +15,7 @@ namespace Ember.View.Client.ViewModels
     public class AccountModel : BaseModel
     {
         private AuthenticationState _authenticationState;
-        
+
         [Inject]
         public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
@@ -40,7 +40,8 @@ namespace Ember.View.Client.ViewModels
         {
             if (Account != null && !firstRender)
             {
-                await InitChartBar();
+                await InitChartBarAsync();
+                await InitLineCharAsync();
             }
         }
 
@@ -107,7 +108,7 @@ namespace Ember.View.Client.ViewModels
             }
         }
 
-        private async Task InitChartBar()
+        private async Task InitChartBarAsync()
         {
             List<int> counts = new();
 
@@ -122,6 +123,20 @@ namespace Ember.View.Client.ViewModels
             }
 
             await JsRuntime.InitChartBar(counts);
+        }
+
+        private readonly IEnumerable<int> data = Enumerable.Range(0, 12)
+                .Select(s => new Random(DateTime.Now.Millisecond * s).Next(500, 5000));
+
+        private async Task InitLineCharAsync()
+        {
+            if (!IsRelated)
+            {
+                await JsRuntime.InitLineChar(new List<int>());
+                return;
+            }
+
+            await JsRuntime.InitLineChar(data);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/account"
 @attribute [Authorize]
 @layout AccountLayout
+
 @inherits AccountModel
 
 @if (Account == null)
@@ -40,7 +41,7 @@ else
                                 <i class="fas fa-cart-arrow-down"></i>
                             </div>
                             <div class="stats-data">
-                                <div class="stats-number">@(Account.Payment) руб.</div>
+                                <div class="stats-number">@(String.Format("{0:0.##}", Account.Payment)) руб.</div>
                                 <div class="stats-change">
                                     <span class="stats-percentage">531,10</span>
                                     <span class="stats-timeframe"> руб/Гкал</span>
@@ -68,7 +69,7 @@ else
                     <div class="card easion-card">
                         <div class="card-header">
                             <div class="easion-card-icon">
-                                <i class="fas fa-chart-bar"></i>
+                                <i class="fas fa-chart-pie"></i>
                             </div>
                             <div class="easion-card-title"> Статистика </div>
                             <div class="easion-card-menu">
@@ -93,7 +94,7 @@ else
                     <div class="card easion-card">
                         <div class="card-header">
                             <div class="easion-card-icon">
-                                <i class="fas fa-bell"></i>
+                                <i class="fas fa-landmark"></i>
                             </div>
                             <div class="easion-card-title"> История оплат </div>
                         </div>
@@ -102,7 +103,7 @@ else
                                 @if (Account.Payments != null)
                                 {
 
-                                    @foreach (var item in Account.Payments)
+                                    @foreach (var item in Account.Payments.Take(5))
                                     {
                                         <a href="#!" class="notification">
                                             <div class="notification-icon">
@@ -114,7 +115,7 @@ else
                                     }
 
                                     <div class="notifications-show-all">
-                                        <a href="#!">Подробнее</a>
+                                        <a href="account/history">Подробнее</a>
                                     </div>
 
                                 }
@@ -123,6 +124,19 @@ else
                                     <a href="#!" class="notification">Нет данных</a>
                                 }
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <div class="card easion-card">
+                        <div class="card-header">
+                            <div class="easion-card-icon">
+                                <i class="fas fa-charging-station"></i>
+                            </div>
+                            <div class="easion-card-title"> История потребления энергии </div>
+                        </div>
+                        <div class="card-body" style="height:400px;" id="lineChart-container">
+                            <canvas id="lineChart"></canvas>
                         </div>
                     </div>
                 </div>

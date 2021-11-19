@@ -9,12 +9,11 @@ namespace Ember.Application.Specification
     {
         protected virtual ISpecification CreateNoChangeAdminRole(IEnumerable<string> usetRoles, IEnumerable<string> changRoles)
         {
+            var condition = new DelegateCondition<IEnumerable<string>>(roles => roles.Contains(Roles.Admin));
+
             return new OrSpecification(
-                new RoleChangeSpecification(usetRoles,
-                    new DelegateCondition<IEnumerable<string>>(roles => roles.Contains(Roles.Admin))),
-                new RoleChangeSpecification(changRoles,
-                    new DelegateCondition<IEnumerable<string>>(roles => roles.Contains(Roles.Admin)))
-                );
+                new RoleChangeSpecification(usetRoles, condition),
+                new RoleChangeSpecification(changRoles, condition));
         }
 
         protected virtual ISpecification CreateNoDeleteUserRole(IEnumerable<string> roles)

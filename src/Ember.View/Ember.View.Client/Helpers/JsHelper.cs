@@ -54,5 +54,10 @@ namespace Ember.Client.Helpers
         {
             await JSRuntime.InvokeVoidAsync("initChartBar", weekday);
         }
+
+        public static async ValueTask InitLineChar(this IJSRuntime JSRuntime, object values)
+        {
+            await JSRuntime.InvokeVoidAsync("initLineChar", values);
+        }
     }
 }

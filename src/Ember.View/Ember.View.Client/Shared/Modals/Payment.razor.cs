@@ -6,6 +6,7 @@ using Ember.Shared.Models;
 using Ember.View.Client.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -34,6 +35,12 @@ namespace Ember.View.Client.Shared.Modals
 
         [Inject]
         public HttpClient HttpClient { get; set; }
+
+        [Inject]
+        public INotificationService NotificationService { get; set; }
+
+        [Inject]
+        public IJSRuntime JsRuntime { get; set; }
 
         [CascadingParameter]
         public BlazoredModalInstance BlazoredModal { get; set; }
@@ -78,6 +85,8 @@ namespace Ember.View.Client.Shared.Modals
 
             if (string.IsNullOrEmpty(error))
             {
+                NotificationService.Send(this, new MessageNotification("Payment completed successfully"));
+
                 await Task.Delay(300);
                 BlazoredModal.Close(ModalResult.Cancel());
             }

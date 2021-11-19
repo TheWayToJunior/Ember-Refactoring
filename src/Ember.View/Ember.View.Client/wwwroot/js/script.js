@@ -134,3 +134,37 @@ window.initChartBar = function (weekday) {
         }
     });
 }
+
+window.initLineChar = function (data) {
+    $('#lineChart').remove();
+    $('#lineChart-container').append('<canvas id="lineChart"><canvas>');
+
+    const $grafica = document.querySelector("#lineChart");
+    const tags = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август","Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+    const dataSales2020 = {
+        label: "Потребление за год",
+        data: data,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+    };
+    new Chart($grafica, {
+        type: 'line',
+        data: {
+            labels: tags,
+            datasets: [
+                dataSales2020,
+            ]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }],
+            },
+            maintainAspectRatio: false
+        }
+    });
+}

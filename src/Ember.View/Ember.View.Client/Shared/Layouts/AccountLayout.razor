@@ -2,6 +2,7 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ILoginService LoginService
+@inject INotificationService NotificationService
 
 <div class="grey lighten-3">
     <header>
@@ -14,11 +15,54 @@
 
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav navbar-collapse">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link waves-effect"><span style="margin-right: 25px;">@userName</span></a>
+                        <li class="nav-item dropdown" style="margin-right: 5px;">
+                            <a class="nav-link waves-effect" href="#" role="button" data-toggle="dropdown" 
+                               style="border-radius: 100%; padding: 7px 9px">
+                                <i class="fas fa-bell"></i>
+                                @if (notifications.Any())
+                                {
+                                    <span class="badge rounded-pill badge-notification bg-danger">@notifications.Count()</span>
+                                }
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end" 
+                                 id="navbarNotificationContent" aria-labelledby="navbarDropdownMenuLink" 
+                                 style="width: 270px; overflow-y: scroll; max-height:300px;" data-popper-placement="null" data-mdb-popper="none">
+                                @foreach (var notification in notifications.OrderByDescending(n => n.Date))
+                                {
+                                    <a class="dropdown-item waves-effect text-wrap" href="#">
+                                        <div class="d-xl-flex align-items-center mb-2">
+                                            <p class="small text-uppercase mb-0 font-weight-bold">@notification.Date.ToShortDateString()</p>
+                                            <div style="width: 5px; height: 5px; background-color: #FC413F; border-radius: 100px; margin-left: 7px"></div>
+                                        </div>
+                                        <p class="mb-0 font-weight-bolder" style="color: #4b4b4b;">@notification.Message</p>
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                }
+                            </div>
                         </li>
-                        <li class="nav-item">
-                            <a href="" class="btn btn-primary waves-effect" @onclick="() => LoginService.Logout()">Выйти</a>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link waves-effect d-flex" role="button" data-toggle="dropdown"
+                               style="background-color: #F8F9F9; border-radius: 200px; font-size: 14px;">
+                                <AuthorizeView Roles="@Roles.Admin">
+                                    <Authorized>
+                                        <span class="material-icons" style="margin-left: 5px;">
+                                            admin_panel_settings
+                                        </span>
+                                    </Authorized>
+                                    <NotAuthorized>
+                                        <span class="material-icons" style="margin-left: 5px;">
+                                            manage_accounts
+                                        </span>
+                                    </NotAuthorized>
+                                </AuthorizeView>
+                                <span style="margin-right: 25px; margin-left: 5px;">@userName</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item waves-effect" href="#">Помощь</a>
+                                <a class="dropdown-item waves-effect" href="#">Настройки</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="" class="dropdown-item waves-effect" @onclick="() => LoginService.Logout()">Выйти</a>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -26,9 +70,11 @@
         </nav>
 
         <div class="sidebar-fixed position-fixed">
-            <a href="/" class="logo-wrapper waves-effect">
-                <img src="http://rst-dnr.ru/wp-content/uploads/2018/02/LOGO-kopiya.jpg" />
-            </a>
+            <div class="d-flex justify-content-center align-items-center" style="height: 110px">
+                <a href="/" class="logo-wrapper waves-effect">
+                    <img src="http://rst-dnr.ru/wp-content/uploads/2018/02/LOGO-kopiya.jpg" />
+                </a>
+            </div>
 
             <div class="list-group list-group-flush">
                 <NavLink class="list-group-item waves-effect" href="account" Match="NavLinkMatch.All">
@@ -37,6 +83,14 @@
                     </span>
                     Мониторинг
                 </NavLink>
+                <AuthorizeView Roles="@Roles.Consumer">
+                    <NavLink class="list-group-item waves-effect" href="account/history">
+                        <span class="material-icons">
+                            history
+                        </span>
+                        История оплат
+                    </NavLink>
+                </AuthorizeView>
                 <NavLink class="list-group-item waves-effect" href="#">
                     <span class="material-icons">
                         supervisor_account
@@ -72,10 +126,38 @@
 
 @code {
     string userName;
+    ICollection<INotification> notifications;
+
+    public AccountLayout()
+    {
+        notifications = new List<INotification>();
+        notifications.Add(new MessageNotification("Welcome to your account. Here you can get all the information about your personal account."));
+        notifications.Add(new MessageNotification("Welcome to your account. Here you can get all the information about your personal account."));
+        notifications.Add(new MessageNotification("Welcome to your account. Here you can get all the information about your personal account."));
+        notifications.Add(new MessageNotification("Welcome to your account. Here you can get all the information about your personal account."));
+        notifications.Add(new MessageNotification("Welcome to your account. Here you can get all the information about your personal account."));
+        notifications.Add(new MessageNotification("Welcome to your account. Here you can get all the information about your personal account."));
+        notifications.Add(new MessageNotification("Welcome to your account. Here you can get all the information about your personal account."));
+        notifications.Add(new MessageNotification("Welcome to your account. Here you can get all the information about your personal account."));
+        notifications.Add(new MessageNotification("Welcome to your account. Here you can get all the information about your personal account."));
+    }
 
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        userName = state.User.Identity.Name;
+        userName =  $"Hello {state.User.Identity.Name}!";
+
+        NotificationService.Notify += OnNotify;
+    }
+
+    private void OnNotify(object sender, INotification notification)
+    {
+        this.notifications.Add(notification);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NotificationService.Notify -= OnNotify;
     }
 }
