@@ -21,9 +21,11 @@ namespace Ember.Client
 
             builder.Services.AddScoped<AuthenticationProvider>()
                 .AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<AuthenticationProvider>())
-                .AddScoped<ILoginService>(provider => provider.GetRequiredService<AuthenticationProvider>());
+                .AddScoped<IAuthenticationProvider>(provider => provider.GetRequiredService<AuthenticationProvider>());
 
             builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IAccountManager, AccountManager>();
 
             builder.Services.AddAuthorizationCore();
             builder.Services.AddBlazoredModal();

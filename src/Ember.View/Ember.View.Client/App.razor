@@ -4,7 +4,7 @@
             <NotAuthorized>
                 <AuthorizeView Context="authenticated">
                     <Authorized Context="authenticated">
-                        <AuthorizeView Roles="Admin" Context="role">
+                        <AuthorizeView Roles="@($"{Roles.Admin} {Roles.Consumer}")" Context="role">
                             <NotAuthorized Context="role">
                                 <ForbiddenView />
                             </NotAuthorized>

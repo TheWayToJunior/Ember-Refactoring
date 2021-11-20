@@ -3,8 +3,8 @@
 
 @inject IJSRuntime JSRuntime
 @inject IModalService Modal
-@inject ILoginService  loginService
-@inject NavigationManager navigationManager
+@inject IAuthenticationProvider  AuthenticationProvider
+@inject NavigationManager NavigationManager
 
 <div class="intro">
     <div class="filter"></div>
@@ -16,7 +16,7 @@
                     <div class="banner-buttom">
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary d-flex align-items-center waves-effect"
-                                    @onclick="@(() => navigationManager.NavigateTo("/account"))">
+                                    @onclick="@(() => NavigationManager.NavigateTo("/account"))">
                                 <i class="material-icons icon">
                                     supervisor_account
                                 </i>
@@ -30,7 +30,7 @@
                                 <a class="dropdown-item" href="#">Профиль</a>
                                 <a class="dropdown-item" href="#">Настройки</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript: void(0)" @onclick="() => loginService.Logout()">Выйти</a>
+                                <a class="dropdown-item" href="javascript: void(0)" @onclick="() => AuthenticationProvider.Logout()">Выйти</a>
                             </div>
                         </div>
                     </div>

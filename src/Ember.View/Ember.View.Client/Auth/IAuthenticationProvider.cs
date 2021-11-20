@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Ember.Client.Auth
 {
-    public interface ILoginService
+    public interface IAuthenticationProvider
     {
         Task Login(UserToken userToken);
 

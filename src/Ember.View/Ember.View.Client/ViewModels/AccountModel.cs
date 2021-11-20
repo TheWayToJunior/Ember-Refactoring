@@ -1,7 +1,6 @@
 ﻿using Blazored.Modal;
 using Ember.Client.Helpers;
 using Ember.Shared;
-using Ember.View.Client.Helpers;
 using Ember.View.Client.Shared.Modals;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -19,13 +18,12 @@ namespace Ember.View.Client.ViewModels
         [Inject]
         public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
+        [Inject]
+        public IAccountManager AccountManager { get; set; }
+
         public AccountDTO Account { get; private set; }
 
         public string Email { get; private set; }
-
-        private bool IsRelated => !string.IsNullOrEmpty(Account.Number);
-
-        private static AccountDTO EmptyAccount => new();
 
 
         protected override async Task OnInitializedAsync()
@@ -47,27 +45,12 @@ namespace Ember.View.Client.ViewModels
 
         public async Task GetAccountAsync()
         {
-            var httpResponse = await HttpClient.GetAsync($"api/account?email={Email}");
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                Console.WriteLine(httpResponse.StatusCode);
-            }
-
-            try
-            {
-                Account = await httpResponse.Content.DeserializeResultAsync<AccountDTO>();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Account = EmptyAccount;
-            }
+            Account = await AccountManager.GetAccountAsync();
         }
 
         public async Task ShowPaymentModalAsync()
         {
-            if (!IsRelated) return;
+            if (!AccountManager.IsRelatedAccount) return;
 
             var parameter = (nameof(Account), Account);
             await ShowAsync<Payment>("Оплата счета", parameter);
@@ -80,7 +63,7 @@ namespace Ember.View.Client.ViewModels
 
             var parameter = (nameof(BindAccount.Email), Email);
 
-            if (IsRelated)
+            if (AccountManager.IsRelatedAccount)
             {
                 await ShowAsync<UnlinkAccount>("Отвязать аккаунт", parameter); return;
             }
@@ -130,7 +113,7 @@ namespace Ember.View.Client.ViewModels
 
         private async Task InitLineCharAsync()
         {
-            if (!IsRelated)
+            if (!AccountManager.IsRelatedAccount)
             {
                 await JsRuntime.InitLineChar(new List<int>());
                 return;

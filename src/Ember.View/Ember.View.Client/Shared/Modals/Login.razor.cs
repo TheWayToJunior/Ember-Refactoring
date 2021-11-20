@@ -42,7 +42,7 @@ namespace Ember.View.Client.Shared.Modals
         private NavigationManager NavigationManager { get; set; }
 
         [Inject]
-        private ILoginService LoginService { get; set; }
+        private IAuthenticationProvider LoginService { get; set; }
 
         async Task LoginUser()
         {

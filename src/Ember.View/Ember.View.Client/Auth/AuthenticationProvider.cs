@@ -13,7 +13,7 @@ using Microsoft.JSInterop;
 
 namespace Ember.Client.Auth
 {
-    public class AuthenticationProvider : AuthenticationStateProvider, ILoginService
+    public class AuthenticationProvider : AuthenticationStateProvider, IAuthenticationProvider
     {
         private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient _httpClient;
