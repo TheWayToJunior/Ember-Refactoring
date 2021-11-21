@@ -3,7 +3,13 @@
 @attribute [Authorize(Roles = Roles.Consumer)]
 @inherits PaymentHistoryModel
 
-@if (IsLoaded)
+<style>
+    body {
+        background-color: #F8F9F9;
+    }
+</style>
+
+@if (IsLoading)
 {
     <div class="d-flex align-items-center justify-content-center" style="height: 80vh;">
         <div class="spinner-border text-info" role="status">
@@ -18,17 +24,15 @@ else
             <div class="d-flex align-items-center mb-4">
                 <form style="width:100%">
                     <div class="row">
-                        <div class="col d-flex align-items-center">
+                        <div class="col-6 col-sm-6 col-lg-3 d-flex align-items-center">
                             <span class="font-weight-bold">From</span>
-                            <input type="text" class="form-control border-0 payment-input" maxlength="10"
-                                   placeholder="@DateTime.Now.ToString("dd-MM-yyyy")" @bind="FromDate">
+                            <input type="text" class="form-control border-0 payment-input" maxlength="10" @bind="FromDate">
                         </div>
-                        <div class="col d-flex align-items-center">
+                        <div class="col-6 col-sm-6 col-lg-3 d-flex align-items-center">
                             <span class="font-weight-bold">To</span>
-                            <input type="text" class="form-control border-0 payment-input" maxlength="10"
-                                   placeholder="@DateTime.Now.ToString("dd-MM-yyyy")" @bind="ToDate">
+                            <input type="text" class="form-control border-0 payment-input" maxlength="10" @bind="ToDate">
                         </div>
-                        <div class="col-md-6 d-flex">
+                        <div class="row col-sm-12 col-lg-6 d-flex">
                             <div class="col-2 d-flex justify-content-center align-items-center">
                                 <a class="btn-floating waves-effect" @onclick="() => StateHasChanged()">
                                     <span class="material-icons">

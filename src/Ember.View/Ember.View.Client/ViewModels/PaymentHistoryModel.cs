@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Ember.View.Client.Models;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,20 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ember.View.Client.ViewModels
 {
-    public class History
-    {
-        public DateTime Date { get; set; }
-
-        public string Description { get; set; }
-
-        public string Type { get; set; }
-
-        public decimal Amount { get; set; }
-
-        public bool IsSuccess { get; set; }
-    }
-
-    public class PaymentHistoryModel : BaseModel
+    public class PaymentHistoryModel : BaseModel, IDisposable
     {
         public const int DefaultPageSize = 5;
 
@@ -31,7 +19,7 @@ namespace Ember.View.Client.ViewModels
             FromDate = DateTime.Now.AddMonths(-1).ToString("dd-MM-yyyy");
             ToDate = DateTime.Now.AddDays(1).ToString("dd-MM-yyyy");
 
-            SelectState = AutoSelectScopeState.GetInstance();
+            SelectState = AutoSelectScopeState.GetInstance(SetCountAllFiltered);
         }
 
         [Inject]
@@ -47,7 +35,7 @@ namespace Ember.View.Client.ViewModels
             private set => _histories = value;
         }
 
-        public bool IsLoaded => !_histories.Any();
+        public bool IsLoading => !_histories.Any();
 
         private int _pageSize;
 
@@ -115,52 +103,17 @@ namespace Ember.View.Client.ViewModels
         {
             PageSize = Histories.Count();
         }
-    }
 
-    public interface ISelectScopeState
-    {
-        string IconHtmlFragment { get; }
-
-        void Click(PaymentHistoryModel model);
-    }
-
-    /// <summary>
-    /// The state in which all selected records are displayed, and their number automatically changes depending on the filter
-    /// </summary>
-    internal class AutoSelectScopeState : ISelectScopeState
-    {
-        public string IconHtmlFragment => "<span class='material-icons'>done_all</span>";
-
-        public void Click(PaymentHistoryModel model)
+        public void Dispose()
         {
-            model.SetCountAllFiltered();
-            model.DateFilterChanged += model.SetCountAllFiltered;
-            model.SelectState = DefaultSelectScopeState.GetInstance();
+            var invocationList = DateFilterChanged?.GetInvocationList();
+
+            if (invocationList is null) return;
+
+            foreach (var @delegate in invocationList)
+            {
+                DateFilterChanged -= @delegate as Action;
+            }
         }
-
-        private readonly static Lazy<ISelectScopeState> _lazyInstance = new(
-            () => new AutoSelectScopeState());
-
-        public static ISelectScopeState GetInstance() => _lazyInstance.Value;
-    }
-
-    /// <summary>
-    /// The state in which records are displayed by default
-    /// </summary>
-    internal class DefaultSelectScopeState : ISelectScopeState
-    {
-        public string IconHtmlFragment => "<span class='material-icons'>done</span>";
-
-        public void Click(PaymentHistoryModel model)
-        {
-            model.PageSize = PaymentHistoryModel.DefaultPageSize;
-            model.DateFilterChanged -= model.SetCountAllFiltered;
-            model.SelectState = AutoSelectScopeState.GetInstance();
-        }
-
-        private readonly static Lazy<ISelectScopeState> _lazyInstance = new(
-            () => new DefaultSelectScopeState());
-
-        public static ISelectScopeState GetInstance() => _lazyInstance.Value;
     }
 }
