@@ -9,9 +9,9 @@ namespace Ember.Domain
 
         public string Number { get; set; }
 
-        public decimal Payment { get; set; }
-
         public string Address { get; set; }
+
+        public virtual ICollection<Accrual> Accruals { get; set; }
 
         public virtual ICollection<Payment> Payments { get; set; }
     }

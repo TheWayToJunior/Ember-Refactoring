@@ -8,12 +8,12 @@ namespace Ember.Infrastructure.Data.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<Payment> builder)
         {
-            builder.HasKey(ph => ph.Id);
+            builder.HasKey(payment => payment.Id);
 
-            builder.Property(ph => ph.Amount);
-            builder.Property(ph => ph.Date);
+            builder.Property(payment => payment.Amount).HasColumnType("Money");
+            builder.Property(payment => payment.Date);
 
-            builder.HasOne(ph => ph.Account)
+            builder.HasOne(payment => payment.Account)
                 .WithMany(account => account.Payments);
         }
     }

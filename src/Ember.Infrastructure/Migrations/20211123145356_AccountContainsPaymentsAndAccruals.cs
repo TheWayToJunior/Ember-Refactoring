@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ember.Infrastructure.Migrations
 {
-    public partial class InitDataBase : Migration
+    public partial class AccountContainsPaymentsAndAccruals : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,7 +53,6 @@ namespace Ember.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Number = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
-                    Payment = table.Column<decimal>(type: "Money", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -186,12 +185,33 @@ namespace Ember.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Accrual",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Amount = table.Column<decimal>(type: "Money", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accrual", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Accrual_PersonalAccounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "PersonalAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payment",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Amount = table.Column<decimal>(type: "Money", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -232,12 +252,12 @@ namespace Ember.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "PersonalAccounts",
-                columns: new[] { "Id", "Address", "Number", "Payment" },
+                columns: new[] { "Id", "Address", "Number" },
                 values: new object[,]
                 {
-                    { 1, "ул. Великан д. 21 кв. 28", "193216", 125m },
-                    { 2, "ул. Жарова д. 5а кв. 47", "321619", 75m },
-                    { 3, "ул. Нежская д. 19", "161932", 547m }
+                    { 1, "ул. Великан д. 21 кв. 28", "193216" },
+                    { 2, "ул. Жарова д. 5а кв. 47", "321619" },
+                    { 3, "ул. Нежская д. 19", "161932" }
                 });
 
             migrationBuilder.InsertData(
@@ -245,20 +265,37 @@ namespace Ember.Infrastructure.Migrations
                 columns: new[] { "Id", "Category", "Description", "ImageSrc", "Source", "Time", "Title" },
                 values: new object[,]
                 {
-                    { 1, 2, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-9.userapi.com/c850128/v850128254/1d36a9/B54sYaowd5E.jpg", null, new DateTime(2021, 10, 25, 16, 52, 6, 584, DateTimeKind.Local).AddTicks(5888), "Об итогах ремонтного периода." },
-                    { 2, 2, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-28.userapi.com/c204516/v204516299/3b411/0qjhwQo15mw.jpg", null, new DateTime(2021, 10, 25, 16, 52, 6, 586, DateTimeKind.Local).AddTicks(1948), "Внимание произвадятся работы!!!" },
-                    { 3, 3, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-35.userapi.com/c851028/v851028124/196804/0j89FAqJ5Wg.jpg", null, new DateTime(2021, 10, 25, 16, 52, 6, 586, DateTimeKind.Local).AddTicks(1977), "Инвестиционная программа 2019 года" }
+                    { 1, 2, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-9.userapi.com/c850128/v850128254/1d36a9/B54sYaowd5E.jpg", null, new DateTime(2021, 11, 23, 17, 53, 55, 957, DateTimeKind.Local).AddTicks(1396), "Об итогах ремонтного периода." },
+                    { 2, 2, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-28.userapi.com/c204516/v204516299/3b411/0qjhwQo15mw.jpg", null, new DateTime(2021, 11, 23, 17, 53, 55, 958, DateTimeKind.Local).AddTicks(3727), "Внимание произвадятся работы!!!" },
+                    { 3, 3, "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний", "https://sun9-35.userapi.com/c851028/v851028124/196804/0j89FAqJ5Wg.jpg", null, new DateTime(2021, 11, 23, 17, 53, 55, 958, DateTimeKind.Local).AddTicks(3748), "Инвестиционная программа 2019 года" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Accrual",
+                columns: new[] { "Id", "AccountId", "Amount", "Date" },
+                values: new object[,]
+                {
+                    { 1, 1, 1250.68m, new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9278) },
+                    { 4, 1, 730.68m, new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9635) },
+                    { 2, 2, 1050.68m, new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9629) },
+                    { 5, 2, 795.15m, new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9637) },
+                    { 3, 3, 1250.68m, new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9633) },
+                    { 6, 3, 942.50m, new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9639) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Payment",
                 columns: new[] { "Id", "AccountId", "Amount", "Date" },
-                values: new object[] { 1, 1, 1250m, new DateTime(2021, 10, 25, 16, 52, 6, 587, DateTimeKind.Local).AddTicks(7466) });
+                values: new object[,]
+                {
+                    { 1, 1, 1300m, new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(7102) },
+                    { 2, 2, 750m, new DateTime(2021, 11, 3, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(7460) }
+                });
 
-            migrationBuilder.InsertData(
-                table: "Payment",
-                columns: new[] { "Id", "AccountId", "Amount", "Date" },
-                values: new object[] { 2, 1, 750m, new DateTime(2021, 11, 14, 16, 52, 6, 587, DateTimeKind.Local).AddTicks(7866) });
+            migrationBuilder.CreateIndex(
+                name: "IX_Accrual_AccountId",
+                table: "Accrual",
+                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -331,6 +368,9 @@ namespace Ember.Infrastructure.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Accrual");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

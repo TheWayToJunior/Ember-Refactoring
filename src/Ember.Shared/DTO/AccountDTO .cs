@@ -8,10 +8,12 @@ namespace Ember.Shared
 
         public string Number { get; set; }
 
-        public decimal Payment { get; set; }
+        public decimal Amount { get; set; }
 
         public string Address { get; set; }
 
         public virtual IEnumerable<PaymentDTO> Payments { get; set; }
+
+        public virtual IEnumerable<AccrualDTO> Accruals { get; set; }
     }
 }

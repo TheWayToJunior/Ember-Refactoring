@@ -108,15 +108,20 @@ namespace Ember.View.Client.ViewModels
             await JsRuntime.InitChartBar(counts);
         }
 
-        private readonly IEnumerable<int> data = Enumerable.Range(0, 12)
-                .Select(s => new Random(DateTime.Now.Millisecond * s).Next(500, 5000));
-
         private async Task InitLineCharAsync()
         {
             if (!AccountManager.IsRelatedAccount)
             {
                 await JsRuntime.InitLineChar(new List<int>());
                 return;
+            }
+
+            var accruals = Account.Accruals.Where(a => a.Date.Year == DateTime.Now.Year);
+            var data = Array.CreateInstance(typeof(decimal), 12).OfType<decimal>().ToList();
+
+            foreach (var accrual in accruals)
+            {
+                data[accrual.Date.Month - 1] = accrual.Amount;
             }
 
             await JsRuntime.InitLineChar(data);

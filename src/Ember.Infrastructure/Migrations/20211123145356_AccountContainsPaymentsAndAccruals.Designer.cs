@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ember.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211025135207_InitDataBase")]
-    partial class InitDataBase
+    [Migration("20211123145356_AccountContainsPaymentsAndAccruals")]
+    partial class AccountContainsPaymentsAndAccruals
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,9 +35,6 @@ namespace Ember.Infrastructure.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
-                    b.Property<decimal>("Payment")
-                        .HasColumnType("Money");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Id")
@@ -54,22 +51,86 @@ namespace Ember.Infrastructure.Migrations
                         {
                             Id = 1,
                             Address = "ул. Великан д. 21 кв. 28",
-                            Number = "193216",
-                            Payment = 125m
+                            Number = "193216"
                         },
                         new
                         {
                             Id = 2,
                             Address = "ул. Жарова д. 5а кв. 47",
-                            Number = "321619",
-                            Payment = 75m
+                            Number = "321619"
                         },
                         new
                         {
                             Id = 3,
                             Address = "ул. Нежская д. 19",
-                            Number = "161932",
-                            Payment = 547m
+                            Number = "161932"
+                        });
+                });
+
+            modelBuilder.Entity("Ember.Domain.Accrual", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("Money");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Accrual");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccountId = 1,
+                            Amount = 1250.68m,
+                            Date = new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9278)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccountId = 2,
+                            Amount = 1050.68m,
+                            Date = new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9629)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccountId = 3,
+                            Amount = 1250.68m,
+                            Date = new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9633)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccountId = 1,
+                            Amount = 730.68m,
+                            Date = new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9635)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AccountId = 2,
+                            Amount = 795.15m,
+                            Date = new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9637)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AccountId = 3,
+                            Amount = 942.50m,
+                            Date = new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(9639)
                         });
                 });
 
@@ -116,7 +177,7 @@ namespace Ember.Infrastructure.Migrations
                             Category = 2,
                             Description = "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний",
                             ImageSrc = "https://sun9-9.userapi.com/c850128/v850128254/1d36a9/B54sYaowd5E.jpg",
-                            Time = new DateTime(2021, 10, 25, 16, 52, 6, 584, DateTimeKind.Local).AddTicks(5888),
+                            Time = new DateTime(2021, 11, 23, 17, 53, 55, 957, DateTimeKind.Local).AddTicks(1396),
                             Title = "Об итогах ремонтного периода."
                         },
                         new
@@ -125,7 +186,7 @@ namespace Ember.Infrastructure.Migrations
                             Category = 2,
                             Description = "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний",
                             ImageSrc = "https://sun9-28.userapi.com/c204516/v204516299/3b411/0qjhwQo15mw.jpg",
-                            Time = new DateTime(2021, 10, 25, 16, 52, 6, 586, DateTimeKind.Local).AddTicks(1948),
+                            Time = new DateTime(2021, 11, 23, 17, 53, 55, 958, DateTimeKind.Local).AddTicks(3727),
                             Title = "Внимание произвадятся работы!!!"
                         },
                         new
@@ -134,7 +195,7 @@ namespace Ember.Infrastructure.Migrations
                             Category = 3,
                             Description = "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний",
                             ImageSrc = "https://sun9-35.userapi.com/c851028/v851028124/196804/0j89FAqJ5Wg.jpg",
-                            Time = new DateTime(2021, 10, 25, 16, 52, 6, 586, DateTimeKind.Local).AddTicks(1977),
+                            Time = new DateTime(2021, 11, 23, 17, 53, 55, 958, DateTimeKind.Local).AddTicks(3748),
                             Title = "Инвестиционная программа 2019 года"
                         });
                 });
@@ -150,7 +211,7 @@ namespace Ember.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("Money");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -166,15 +227,15 @@ namespace Ember.Infrastructure.Migrations
                         {
                             Id = 1,
                             AccountId = 1,
-                            Amount = 1250m,
-                            Date = new DateTime(2021, 10, 25, 16, 52, 6, 587, DateTimeKind.Local).AddTicks(7466)
+                            Amount = 1300m,
+                            Date = new DateTime(2021, 11, 23, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(7102)
                         },
                         new
                         {
                             Id = 2,
-                            AccountId = 1,
+                            AccountId = 2,
                             Amount = 750m,
-                            Date = new DateTime(2021, 11, 14, 16, 52, 6, 587, DateTimeKind.Local).AddTicks(7866)
+                            Date = new DateTime(2021, 11, 3, 17, 53, 55, 959, DateTimeKind.Local).AddTicks(7460)
                         });
                 });
 
@@ -389,6 +450,17 @@ namespace Ember.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Ember.Domain.Accrual", b =>
+                {
+                    b.HasOne("Ember.Domain.Account", "Account")
+                        .WithMany("Accruals")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("Ember.Domain.Payment", b =>
                 {
                     b.HasOne("Ember.Domain.Account", "Account")
@@ -476,6 +548,8 @@ namespace Ember.Infrastructure.Migrations
 
             modelBuilder.Entity("Ember.Domain.Account", b =>
                 {
+                    b.Navigation("Accruals");
+
                     b.Navigation("Payments");
                 });
 

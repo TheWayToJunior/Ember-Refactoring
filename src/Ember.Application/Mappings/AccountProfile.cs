@@ -8,7 +8,8 @@ namespace Ember.Application.Mappings
     {
         public AccountProfile()
         {
-            CreateMap<Account, AccountDTO>();
+            CreateMap<Account, AccountDTO>()
+                .ForMember(dto => dto.Amount, opt => opt.Ignore());
         }
     }
 }

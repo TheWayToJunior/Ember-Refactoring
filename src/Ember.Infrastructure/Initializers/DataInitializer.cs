@@ -126,21 +126,18 @@ namespace Ember.Infrastructure.Helpers
                     {
                         Id = 1,
                         Number = "193216",
-                        Payment = 125,
                         Address = "ул. Великан д. 21 кв. 28"
                     },
                     new Account
                     {
                         Id = 2,
                         Number = "321619",
-                        Payment = 75,
                         Address = "ул. Жарова д. 5а кв. 47"
                     },
                     new Account
                     {
                         Id = 3,
                         Number = "161932",
-                        Payment = 547,
                         Address = "ул. Нежская д. 19"
                     }
             };
@@ -154,16 +151,69 @@ namespace Ember.Infrastructure.Helpers
                     {
                         Id = 1,
                         AccountId = 1,
-                        Amount = 1250,
+                        Amount = 1300,
                         Date = DateTime.Now
                     },
+
                     new Payment
                     {
                         Id = 2,
-                        AccountId = 1,
+                        AccountId = 2,
                         Amount = 750,
-                        Date = DateTime.Now.AddDays(20)
+                        Date = DateTime.Now.AddDays(-20)
                     },
+                });
+
+            builder.Entity<Accrual>().HasData(
+                new Accrual[]
+                {
+                    new Accrual
+                    {
+                        Id = 1,
+                        AccountId = 1,
+                        Amount = 1250.68m,
+                        Date = DateTime.Now
+                    },
+
+                    new Accrual
+                    {
+                        Id = 2,
+                        AccountId = 2,
+                        Amount = 1050.68m,
+                        Date = DateTime.Now
+                    },
+
+                    new Accrual
+                    {
+                        Id = 3,
+                        AccountId = 3,
+                        Amount = 1250.68m,
+                        Date = DateTime.Now
+                    },
+
+                    new Accrual
+                    {
+                        Id = 4,
+                        AccountId = 1,
+                        Amount = 730.68m,
+                        Date = DateTime.Now.AddMonths(1)
+                    },
+
+                    new Accrual
+                    {
+                        Id = 5,
+                        AccountId = 2,
+                        Amount = 795.15m,
+                        Date =DateTime.Now.AddMonths(1)
+                    },
+
+                    new Accrual
+                    {
+                        Id = 6,
+                        AccountId = 3,
+                        Amount = 942.50m,
+                        Date = DateTime.Now.AddMonths(1)
+                    }
                 });
         }
     }

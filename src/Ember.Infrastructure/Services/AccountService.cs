@@ -42,6 +42,7 @@ namespace Ember.Infrastructure.Services
             UserAccount userAccount = await _context.UsersAccounts
                 .Include(ua => ua.Account)
                 .Include(ua => ua.Account.Payments.OrderByDescending(p => p.Date))
+                .Include(ua => ua.Account.Accruals.OrderByDescending(p => p.Date))
                 .FirstOrDefaultAsync(us => us.UserId.Equals(user.Id));
 
             if (userAccount is null)
@@ -50,9 +51,19 @@ namespace Ember.Infrastructure.Services
                     .BuildResult();
             }
 
-            return resultBuilder.SetValue(
-                _mapper.Map<AccountDTO>(userAccount.Account))
+            var result = _mapper.Map<AccountDTO>(userAccount.Account);
+            result.Amount = await CalculateAmountAsync(userAccount.Account);
+
+            return resultBuilder.SetValue(result)
                 .BuildResult();
+        }
+
+        private async Task<decimal> CalculateAmountAsync(Account account)
+        {
+            var accruals = await Task.Run(() => account.Accruals.Sum(a => a.Amount));
+            var payments = await Task.Run(() => account.Payments.Sum(a => a.Amount));
+
+            return payments - accruals;
         }
 
         public async Task<IResult> BindAsync(string email, string numberAccount)
