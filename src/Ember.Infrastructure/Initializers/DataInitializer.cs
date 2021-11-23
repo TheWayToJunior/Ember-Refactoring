@@ -90,33 +90,33 @@ namespace Ember.Infrastructure.Helpers
                         {
                             Id = 1,
                             Time = DateTime.Now,
-                            ImageSrc="https://sun9-9.userapi.com/c850128/v850128254/1d36a9/B54sYaowd5E.jpg",
-                            Title= "Об итогах ремонтного периода.",
+                            ImageSrc="https://avatars.mds.yandex.net/get-zen_doc/927575/pub_5b6ee2f6c3095b00a85df0f2_5b6ee30c654a8700a889b22f/scale_1200",
+                            Title= "Инвестиционная программа 2019 года",
                             Description = "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были" +
                                           " разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний",
-                            Category = CategoryMode.Repair
+                            Category = CategoryMode.Events
                         },
 
                         new News
                         {
                             Id = 2,
                             Time = DateTime.Now,
-                            ImageSrc="https://sun9-28.userapi.com/c204516/v204516299/3b411/0qjhwQo15mw.jpg",
-                            Title= "Внимание произвадятся работы!!!",
+                            ImageSrc="https://krot-servis.com.ua/wp-content/uploads/2017/04/factory-service-1.jpg",
+                            Title= "Загрязнение воздуха",
                             Description = "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были" +
                                           " разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний",
-                            Category =  CategoryMode.Repair
+                            Category =  CategoryMode.Ecology
                         },
 
                         new News
                         {
                             Id = 3,
                             Time = DateTime.Now,
-                            ImageSrc="https://sun9-35.userapi.com/c851028/v851028124/196804/0j89FAqJ5Wg.jpg",
-                            Title= "Инвестиционная программа 2019 года",
+                            ImageSrc="https://m.politnavigator.net/wp-content/uploads/2016/12/донбасс.jpg",
+                            Title= " Об итогах ремонтного периода.",
                             Description = "Согласно Правил подготовки теплового хозяйства к отопительному сезону предприятием были" +
                                           " разработаны мероприятия по подготовке объектов теплоснабжения к работе в осеннее-зимний",
-                             Category =  CategoryMode.Ecology
+                             Category =  CategoryMode.Events
                         }
                     });
 

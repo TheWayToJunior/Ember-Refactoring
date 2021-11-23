@@ -41,8 +41,10 @@ namespace Ember.Infrastructure.Services
 
             UserAccount userAccount = await _context.UsersAccounts
                 .Include(ua => ua.Account)
-                .Include(ua => ua.Account.Payments.OrderByDescending(p => p.Date))
-                .Include(ua => ua.Account.Accruals.OrderByDescending(p => p.Date))
+                    .Include(ua => ua.Account.Payments.OrderByDescending(p => p.Date))
+                    .Include(ua => ua.Account.Accruals.OrderByDescending(p => p.Date))
+                .AsNoTracking()
+                .AsSingleQuery()
                 .FirstOrDefaultAsync(us => us.UserId.Equals(user.Id));
 
             if (userAccount is null)

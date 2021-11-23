@@ -91,7 +91,7 @@ else
                                 <td>@item.Date.ToString("dd-MM-yyyy")</td>
                                 <td>@item.Type</td>
                                 <td style="max-width: 130px;">@item.Description</td>
-                                <td>@item.Amount ₽</td>
+                                <td>@String.Format("{0:0.##}", item.Amount) ₽</td>
 
                                 @if (item.IsSuccess)
                                 {

@@ -105,11 +105,11 @@ else
 
                                     @foreach (var item in Account.Payments.Take(5))
                                     {
-                                        <a href="#!" class="notification">
+                                        <a href="javascript:void(0);" class="notification">
                                             <div class="notification-icon">
                                                 <i class="fas fa-inbox"></i>
                                             </div>
-                                            <div class="notification-text">@item.Amount руб.</div>
+                                            <div class="notification-text">@String.Format("{0:0.##}", item.Amount) руб.</div>
                                             <span class="notification-time">@((DateTime.Now - item.Date).Days) days ago</span>
                                         </a>
                                     }

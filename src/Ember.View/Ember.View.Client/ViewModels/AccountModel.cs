@@ -116,12 +116,13 @@ namespace Ember.View.Client.ViewModels
                 return;
             }
 
+            var data = new decimal[12];
             var accruals = Account.Accruals.Where(a => a.Date.Year == DateTime.Now.Year);
-            var data = Array.CreateInstance(typeof(decimal), 12).OfType<decimal>().ToList();
 
             foreach (var accrual in accruals)
             {
-                data[accrual.Date.Month - 1] = accrual.Amount;
+                /// The schedule starts from October
+                data[Math.Abs(accrual.Date.Month - 10)] = accrual.Amount;
             }
 
             await JsRuntime.InitLineChar(data);

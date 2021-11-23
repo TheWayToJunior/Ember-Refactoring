@@ -140,7 +140,7 @@ window.initLineChar = function (data) {
     $('#lineChart-container').append('<canvas id="lineChart"><canvas>');
 
     const $grafica = document.querySelector("#lineChart");
-    const tags = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август","Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+    const tags = ["Октябрь", "Ноябрь", "Декабрь", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь"]
     const dataSales2020 = {
         label: "Потребление за год",
         data: data,
