@@ -10,6 +10,7 @@ namespace Ember.Tests
         private static IEnumerable<Profile> GetProfiles() 
         {
             yield return new AccountProfile();
+            yield return new AccrualProfile();
             yield return new NewsProfile();
             yield return new PaymentProfile();
         }

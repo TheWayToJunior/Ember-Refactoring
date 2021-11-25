@@ -25,6 +25,9 @@ namespace Ember.View.Client.Shared.Modals
         [Inject]
         public HttpClient HttpClient { get; set; }
 
+        [Inject]
+        public INotificationService NotificationService { get; set; }
+
         protected override void OnInitialized()
         {
             _bindingRequest = new BindingRequest
@@ -44,6 +47,7 @@ namespace Ember.View.Client.Shared.Modals
             if(string.IsNullOrEmpty(_errorMessage))
             {
                 BlazoredModal.Close(ModalResult.Cancel());
+                NotificationService.Send(this, new MessageNotification("Bind account"));
             }
         }
     }

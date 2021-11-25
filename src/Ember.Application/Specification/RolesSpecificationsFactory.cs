@@ -7,26 +7,26 @@ namespace Ember.Application.Specification
 {
     public class RolesSpecificationsFactory
     {
-        protected virtual ISpecification CreateNoChangeAdminRole(IEnumerable<string> usetRoles, IEnumerable<string> changRoles)
+        protected virtual ISpecification CreateAdminRoleSpecification(IEnumerable<string> usetRoles, IEnumerable<string> changRoles)
         {
             var condition = new DelegateCondition<IEnumerable<string>>(roles => roles.Contains(Roles.Admin));
 
             return new OrSpecification(
-                new RoleChangeSpecification(usetRoles, condition),
-                new RoleChangeSpecification(changRoles, condition));
+                new NoChangeRoleSpecification(usetRoles, condition),
+                new NoChangeRoleSpecification(changRoles, condition));
         }
 
-        protected virtual ISpecification CreateNoDeleteUserRole(IEnumerable<string> roles)
+        protected virtual ISpecification CreateUserRoleSpecification(IEnumerable<string> roles)
         {
-            return new RoleChangeSpecification(roles,
+            return new NoChangeRoleSpecification(roles,
                 new DelegateCondition<IEnumerable<string>>(@roles => !@roles.Contains(Roles.User)));
         }
 
         public SpecificationsCollection Create(IEnumerable<string> usetRoles, IEnumerable<string> changRoles)
         {
             return new SpecificationsCollection(
-                CreateNoChangeAdminRole(usetRoles, changRoles), 
-                CreateNoDeleteUserRole(changRoles));
+                CreateAdminRoleSpecification(usetRoles, changRoles),
+                CreateUserRoleSpecification(changRoles));
         }
     }
 }

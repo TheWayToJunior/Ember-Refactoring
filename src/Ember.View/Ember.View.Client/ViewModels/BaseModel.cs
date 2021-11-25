@@ -19,5 +19,8 @@ namespace Ember.View.Client.ViewModels
 
         [Inject]
         protected NavigationManager NavigationManager { get; set; }
+
+        [Inject]
+        protected INotificationService NotificationService  { get; set; }
     }
 }

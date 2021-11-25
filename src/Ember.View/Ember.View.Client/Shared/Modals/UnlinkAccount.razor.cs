@@ -20,6 +20,9 @@ namespace Ember.View.Client.Shared.Modals
         [Inject]
         public HttpClient HttpClient { get; set; }
 
+        [Inject]
+        public INotificationService NotificationService { get; set; }
+
         private async Task UnlinkAsync()
         {
             var httpResponse = await HttpClient.DeleteAsync($"api/account?email={Email}");
@@ -27,6 +30,7 @@ namespace Ember.View.Client.Shared.Modals
             if (httpResponse.IsSuccessStatusCode)
             {
                 BlazoredModal.Close(ModalResult.Cancel());
+                NotificationService.Send(this, new MessageNotification("Unlink account"));
             }
 
             _errorMessage = await ErrorMessageHandler.HandleAsync(httpResponse);
