@@ -16,7 +16,7 @@ namespace Ember.Tests
             var roles = new string[] { Roles.Admin, Roles.User, Roles.Consumer };
 
             var specifications = new SpecificationsCollection(
-                new RoleChangeSpecification(roles, new DelegateCondition<IEnumerable<string>>(roles => roles.Contains(Roles.Admin)))
+                new NoChangeRoleSpecification(roles, new DelegateCondition<IEnumerable<string>>(roles => roles.Contains(Roles.Admin)))
                 );
 
 
@@ -38,9 +38,9 @@ namespace Ember.Tests
 
             var specifications = new SpecificationsCollection(
                 new OrSpecification(
-                    new RoleChangeSpecification(usetRoles,
+                    new NoChangeRoleSpecification(usetRoles,
                         new DelegateCondition<IEnumerable<string>>(roles => roles.Contains(Roles.Admin))),
-                    new RoleChangeSpecification(changedRoles,
+                    new NoChangeRoleSpecification(changedRoles,
                         new DelegateCondition<IEnumerable<string>>(roles => roles.Contains(Roles.Admin)))
                     )
                 );
@@ -62,7 +62,7 @@ namespace Ember.Tests
             var changedRoles = new string[] { Roles.Consumer };
 
             var specifications = new SpecificationsCollection(
-                new RoleChangeSpecification(changedRoles, new DelegateCondition<IEnumerable<string>>(roles => !roles.Contains(Roles.User)))
+                new NoChangeRoleSpecification(changedRoles, new DelegateCondition<IEnumerable<string>>(roles => !roles.Contains(Roles.User)))
                 );
 
 

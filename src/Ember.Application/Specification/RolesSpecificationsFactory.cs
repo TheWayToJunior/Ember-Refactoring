@@ -26,7 +26,7 @@ namespace Ember.Application.Specification
         {
             return new SpecificationsCollection(
                 CreateAdminRoleSpecification(userRoles, changRoles),
-                CreateUserRoleSpecification(null, changRoles));
+                CreateUserRoleSpecification(userRoles, changRoles));
         }
     }
 }
