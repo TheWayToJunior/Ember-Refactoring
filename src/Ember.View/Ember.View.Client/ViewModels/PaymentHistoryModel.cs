@@ -16,7 +16,7 @@ namespace Ember.View.Client.ViewModels
             Histories = new List<History>();
             PageSize = DefaultPageSize;
 
-            FromDate = DateTime.Now.AddMonths(-1).ToString("dd-MM-yyyy");
+            FromDate = DateTime.Now.AddMonths(-12).ToString("dd-MM-yyyy");
             ToDate = DateTime.Now.AddDays(1).ToString("dd-MM-yyyy");
 
             SelectState = AutoSelectScopeState.GetInstance(SetCountAllFiltered);
@@ -29,13 +29,13 @@ namespace Ember.View.Client.ViewModels
 
         public IEnumerable<History> Histories
         {
-            get => _histories.Where(h => h.Date > DateTime.Parse(FromDate) && 
+            get => _histories.Where(h => h.Date > DateTime.Parse(FromDate) &&
                 h.Date < DateTime.Parse(ToDate));
 
             private set => _histories = value;
         }
 
-        public bool IsLoading => !_histories.Any();
+        public bool IsLoading => AccountManager.Account is null;
 
         private int _pageSize;
 
@@ -83,15 +83,17 @@ namespace Ember.View.Client.ViewModels
 
         protected async override Task OnInitializedAsync()
         {
-            Histories = (await AccountManager.GetPaymentHistory())
-                .Select(p => new History
-                {
-                    Date = p.Date,
-                    Amount = p.Amount,
-                    Description = "Payment account",
-                    Type = "Sent",
-                    IsSuccess = true
-                });
+            var paymentHistory = await AccountManager.GetPaymentHistory();
+
+            /// Temporary mapping of entities
+            Histories = paymentHistory?.Select(p => new History
+            {
+                Date = p.Date,
+                Amount = p.Amount,
+                Description = "Payment account",
+                Type = "Sent",
+                IsSuccess = true
+            }) ?? new List<History>();
         }
 
         public void Select()

@@ -1,4 +1,5 @@
-﻿using Ember.Exceptions;
+﻿using Ember.Domain.Contracts;
+using Ember.Exceptions;
 using System.Collections.Generic;
 
 namespace Ember.Application.Specification
@@ -6,9 +7,9 @@ namespace Ember.Application.Specification
     public class NoChangeRoleSpecification : ISpecification
     {
         private readonly IEnumerable<string> _roles;
-        private readonly DelegateCondition<IEnumerable<string>> _condition;
+        private readonly ICondition<IEnumerable<string>> _condition;
 
-        public NoChangeRoleSpecification(IEnumerable<string> roles, DelegateCondition<IEnumerable<string>> condition)
+        public NoChangeRoleSpecification(IEnumerable<string> roles, ICondition<IEnumerable<string>> condition)
         {
             _roles = roles;
             _condition = condition;

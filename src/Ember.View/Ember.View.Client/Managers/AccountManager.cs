@@ -30,7 +30,7 @@ namespace Ember.View.Client
 
         public AccountDTO Account { get; set; }
 
-        public bool IsRelatedAccount => !string.IsNullOrEmpty(Account.Number);
+        public bool IsRelatedAccount => !string.IsNullOrEmpty(Account?.Number);
 
         public async Task<AccountDTO> GetAccountAsync()
         {
@@ -38,7 +38,7 @@ namespace Ember.View.Client
             return Account;
         }
 
-        public async Task<IEnumerable<PaymentDTO>> GetPaymentHistory() 
+        public async Task<IEnumerable<PaymentDTO>> GetPaymentHistory()
         {
             if (Account is null)
             {
