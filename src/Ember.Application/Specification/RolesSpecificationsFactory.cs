@@ -1,11 +1,12 @@
-﻿using Ember.Shared;
+﻿using Ember.Application.Interfaces;
+using Ember.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Ember.Application.Specification
 {
-    public class RolesSpecificationsFactory
+    public class RolesSpecificationsFactory : IRolesSpecificationsFactory
     {
         protected virtual ISpecification CreateAdminRoleSpecification(IEnumerable<string> userRoles, IEnumerable<string> changRoles)
         {

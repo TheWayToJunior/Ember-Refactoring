@@ -1,6 +1,6 @@
 ﻿using Ember.Application.Extensions;
+using Ember.Application.Interfaces;
 using Ember.Application.Interfaces.Services;
-using Ember.Application.Specification;
 using Ember.Domain.Contracts;
 using Ember.Infrastructure.Data;
 using Ember.Infrastructure.Data.Entitys;
@@ -23,15 +23,16 @@ namespace Ember.Infrastructure.Services
         private readonly RoleManager<ApplicationRole> _roleManager;
 
         private readonly ApplicationDbContext _context;
-        private readonly RolesSpecificationsFactory _specificationsFactory;
+        private readonly IRolesSpecificationsFactory _specificationsFactory;
 
-        public UserRolesService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ApplicationDbContext context)
+        public UserRolesService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ApplicationDbContext context,
+            IRolesSpecificationsFactory specificationsFactory)
         {
             _userManager = userManager;
             _roleManager = roleManager;
 
             _context = context;
-            _specificationsFactory = new();
+            _specificationsFactory = specificationsFactory;
         }
 
         public async Task<IResult<PaginationResponse<UserRolesDTO>>> GetPageUsersWithRolesAsync(PaginationRequest request, string roleName)

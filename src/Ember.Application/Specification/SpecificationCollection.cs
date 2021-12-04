@@ -4,7 +4,7 @@ namespace Ember.Application.Specification
 {
     public class SpecificationsCollection
     {
-        private IEnumerable<ISpecification> _rules;
+        private readonly IEnumerable<ISpecification> _rules;
 
         public SpecificationsCollection(params ISpecification[] rules)
         {
